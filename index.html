@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="./favicon.png" />
+		<meta name="viewport" content="width=device-width" />
+		
+		<link href="./_app/immutable/assets/2.671223aa.css" rel="stylesheet">
+		<link rel="modulepreload" href="./_app/immutable/entry/start.ec32ab5a.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/scheduler.e108d1fd.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/singletons.bae6e1a4.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/index.0378bb41.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/app.31faeb27.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/index.9a9dd858.js">
+		<link rel="modulepreload" href="./_app/immutable/nodes/0.0d84efc3.js">
+		<link rel="modulepreload" href="./_app/immutable/nodes/2.31c46fbb.js">
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">  <h1 data-svelte-h="svelte-1topxm2">I call it cappuchino :coffee: ...</h1>  <svg class="svelte-173oplp"><circle cx="50" cy="50" r="10" class="svelte-173oplp"></circle></svg> <div class="controls svelte-173oplp"><label><h3>stiffness (0.1)</h3> <input type="range" min="0.01" max="1" step="0.01" class="svelte-173oplp" value="0.1"></label> <label><h3>damping (0.25)</h3> <input type="range" min="0.01" max="1" step="0.01" class="svelte-173oplp" value="0.25"></label> </div> 
+			
+			<script>
+				{
+					__sveltekit_1ceylx8 = {
+						assets: "/eight-fold-expressions",
+						base: new URL(".", location).pathname.slice(0, -1),
+						env: {}
+					};
+
+					const element = document.currentScript.parentElement;
+
+					const data = [null,null];
+
+					Promise.all([
+						import("./_app/immutable/entry/start.ec32ab5a.js"),
+						import("./_app/immutable/entry/app.31faeb27.js")
+					]).then(([kit, app]) => {
+						kit.start(app, element, {
+							node_ids: [0, 2],
+							data,
+							form: null,
+							error: null
+						});
+					});
+				}
+			</script>
+		</div>
+	</body>
+</html>
