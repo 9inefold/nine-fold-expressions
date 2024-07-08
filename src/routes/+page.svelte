@@ -8,8 +8,9 @@
 	let size = spring(10);
 </script>
 
-<h1>I call it cappuchino :coffee:</h1>
+<h1>I call it cappuchino :coffee: ...</h1>
 
+<!-- svelte-ignore a11y-no-static-element-interactions -->
 <svg
 	on:mousemove={(e) => {
 		coords.set({ x: e.clientX, y: e.clientY });
