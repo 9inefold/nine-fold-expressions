@@ -1,13 +1,34 @@
 import adapter from '@sveltejs/adapter-static';
 import { vitePreprocess } from '@sveltejs/kit/vite';
+import { sveltePreprocess } from 'svelte-preprocess';
+
+import { mdsvex } from 'mdsvex';
+
+const md_extensions = [".md", ".svelte.md", ".svx"];
+const base_path = (process.env.NODE_ENV === 'production') ? '/eight-fold-expressions' : '';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-	preprocess: vitePreprocess(),
+	extensions: [".svelte", ...md_extensions],
+	preprocess: [
+		sveltePreprocess({
+			// postcss: true
+		}),
+		mdsvex({
+			extensions: [...md_extensions],
+			layout: {}
+		})
+	],
 	kit: {
 		adapter: adapter(),
+		alias: {
+			'$routes': 			'src/routes',
+			'$components': 	'src/lib/components',
+			'$styles': 			'src/lib/styles',
+			'$util':				'src/lib/util',
+		},
     paths: {
-        base: process.env.NODE_ENV === 'production' ? '/eight-fold-expressions' : '',
+      base: base_path,
     }
 	}
 };

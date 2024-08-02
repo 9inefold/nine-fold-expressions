@@ -1,0 +1,20 @@
+// @use 'base';
+
+$primary-color: #f7f0cc;
+$text-color: rgb(235, 162, 80);
+
+body {
+  background: $primary-color;
+  color: $text-color;
+}
+
+html {
+	scroll-behavior: smooth;
+	font-size: 18px;
+	width: 100%;
+}
+
+#svelte-root {
+	height: 100%;
+	position: relative;
+}
