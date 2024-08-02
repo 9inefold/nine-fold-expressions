@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { BlogPost } from '$util/types';
-
+  
   export let data: { post: BlogPost };
 	$: ({ post } = data);
 </script>

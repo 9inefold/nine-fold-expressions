@@ -27,9 +27,11 @@ const config = {
 			'$styles': 			'src/lib/styles',
 			'$util':				'src/lib/util',
 		},
-    paths: {
-      base: base_path,
-    }
+		prerender: {
+			entries: ["*", "/blog"],
+			crawl: true,
+		},
+    paths: { base: base_path, }
 	}
 };
 
