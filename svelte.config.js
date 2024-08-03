@@ -23,6 +23,7 @@ const config = {
 		adapter: adapter(),
 		alias: {
 			'$routes': 			'src/routes',
+			"$lib":					'src/lib',
 			'$components': 	'src/lib/components',
 			'$styles': 			'src/lib/styles',
 			'$util':				'src/lib/util',

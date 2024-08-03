@@ -1,5 +1,21 @@
 <script>
 	import { spring } from 'svelte/motion';
+	import { onMount } from 'svelte';
+	import { paint } from '$lib/gradient.js';
+
+	onMount(() => {
+		const canvas = document.querySelector('canvas');
+		const context = canvas?.getContext('2d');
+
+		let frame = requestAnimationFrame(function loop(t) {
+			frame = requestAnimationFrame(loop);
+			paint(context, t);
+		});
+
+		return () => {
+			cancelAnimationFrame(frame);
+		};
+	});
 
 	let coords = spring({ x: 50, y: 50 }, {
 		stiffness: 0.1,
@@ -9,6 +25,11 @@
 </script>
 
 <h1>I call it cappuchino :coffee: ...</h1>
+
+<canvas
+	width={32}
+	height={32}
+></canvas>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <svg
@@ -56,6 +77,19 @@
 		height: 100%;
 		left: 0;
 		top: 0;
+	}
+
+	canvas {
+		position: fixed;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		background-color: #666;
+		mask: url(/images/eightfold-mask.svg) 50% 50% no-repeat;
+		mask-size: 60vmin;
+		-webkit-mask: url(/images/eightfold-mask.svg) 50% 50% no-repeat;
+		-webkit-mask-size: 60vmin;
 	}
 
 	circle {
