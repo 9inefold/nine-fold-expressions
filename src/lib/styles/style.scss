@@ -1,4 +1,5 @@
 // @use 'base';
+@import 'fonts';
 
 $primary-color: #f7f0cc;
 $text-color: rgb(235, 162, 80);
@@ -6,12 +7,15 @@ $text-color: rgb(235, 162, 80);
 body {
   background: $primary-color;
   color: $text-color;
+  text-align: center;
 }
 
 html {
 	scroll-behavior: smooth;
 	font-size: 18px;
 	width: 100%;
+  background-image: url("/images/space-bg.gif");
+  background-repeat: repeat;
 }
 
 #svelte-root {

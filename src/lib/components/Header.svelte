@@ -1,9 +1,13 @@
 <script>
 	import { base } from '$app/paths';
+	import { homepage } from '$lib/config';
+	import Logo from './basic/Logo.svelte'
 </script>
 
 <header>
-	<a href="{base}/">Home</a>
+	<a href="{homepage}">
+		<Logo size={60} animated={true} />
+	</a>
 	<nav>
 		<ul>
 			<li>
@@ -18,22 +22,24 @@
 
 <style>
 	header {
-		padding: 1rem;
-		background: lightskyblue;
+		background: rgb(87, 58, 176);
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: space-between;
 	}
 
+	a {
+		padding: .5rem;
+		text-decoration: none;
+		color: inherit;
+	}
+
 	ul {
+		padding: 1rem;
 		margin: 0;
 		list-style-type: none;
 		display: flex;
 		gap: 1rem;
-	}
-
-	a {
-		text-decoration: none;
-		color: inherit;
+		vertical-align: center;
 	}
 </style>

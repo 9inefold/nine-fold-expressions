@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 devDependencies:
+  '@iconify/svelte':
+    specifier: ^4.0.2
+    version: 4.0.2(svelte@4.2.0)
   '@playwright/test':
     specifier: ^1.28.1
     version: 1.38.0
@@ -17,6 +20,12 @@ devDependencies:
   '@sveltejs/kit':
     specifier: ^1.20.4
     version: 1.25.0(svelte@4.2.0)(vite@4.4.9)
+  '@types/dateformat':
+    specifier: ^5.0.2
+    version: 5.0.2
+  dateformat:
+    specifier: ^5.0.3
+    version: 5.0.3
   mdsvex:
     specifier: ^0.11.2
     version: 0.11.2(svelte@4.2.0)
@@ -262,6 +271,19 @@ packages:
     dev: true
     optional: true
 
+  /@iconify/svelte@4.0.2(svelte@4.2.0):
+    resolution: {integrity: sha512-6BSrU85FzGfhQD3bTXpnkCCvBAglEt8T9QednVnXAYm4C+d3464y+pYMzhQNJm5mPId2cuiw+2wXlDflXllHDw==}
+    peerDependencies:
+      svelte: '>4.0.0'
+    dependencies:
+      '@iconify/types': 2.0.0
+      svelte: 4.2.0
+    dev: true
+
+  /@iconify/types@2.0.0:
+    resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
+    dev: true
+
   /@jest/schemas@29.6.3:
     resolution: {integrity: sha512-mo5j5X+jIZmJQveBKeS/clAueipV7KgiX1vMgCxam1RNYiqE1w62n0/tJJnHtjW8ZHcQco5gY85jA3mi0L+nSA==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
@@ -429,6 +451,10 @@ packages:
 
   /@types/cookie@0.5.2:
     resolution: {integrity: sha512-DBpRoJGKJZn7RY92dPrgoMew8xCWc2P71beqsjyhEI/Ds9mOyVmBwtekyfhpwFIVt1WrxTonFifiOZ62V8CnNA==}
+    dev: true
+
+  /@types/dateformat@5.0.2:
+    resolution: {integrity: sha512-M95hNBMa/hnwErH+a+VOD/sYgTmo15OTYTM2Hr52/e0OdOuY+Crag+kd3/ioZrhg0WGbl9Sm3hR7UU+MH6rfOw==}
     dev: true
 
   /@types/estree@1.0.1:
@@ -626,6 +652,11 @@ packages:
     dependencies:
       mdn-data: 2.0.30
       source-map-js: 1.0.2
+    dev: true
+
+  /dateformat@5.0.3:
+    resolution: {integrity: sha512-Kvr6HmPXUMerlLcLF+Pwq3K7apHpYmGDVqrxcDasBg86UcKeTSNWbEzU8bwdXnxnR44FtMhJAxI4Bov6Y/KUfA==}
+    engines: {node: '>=12.20'}
     dev: true
 
   /debug@4.3.4:

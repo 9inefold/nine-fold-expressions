@@ -1,6 +1,10 @@
 import type { BlogPost } from "$util/types";
 // import striptags from 'striptags';
 
+const tagAliases: Map<string, string> = new Map<string, string>([
+	["$hc", "headless-compiler"]
+]);
+
 export const fetchPosts = (doRender: boolean = false): BlogPost[] => {
 	const imports = import.meta.glob('$routes/blog/*.md', {eager: true});
 	const posts: BlogPost[] = [];
@@ -25,12 +29,22 @@ export const filterPosts = (posts: BlogPost[]): BlogPost[] => {
 	return filteredPosts
 		.sort((a, b) => dateSort(a, b))
 		.map((post) => {
+			if (post && post.tags)
+				post.tags = mapTags(post.tags);
 			return {
 				...post,
 				related: relatedPosts(filteredPosts, post),
 			} as BlogPost;
 		});
 };
+
+const mapTags = (tags: string[]): string[] => {
+	return tags.map((tag) => {
+		if (tagAliases.has(tag))
+			return tagAliases.get(tag) as string;
+		return tag;
+	})
+}
 
 const dateSort = (lhs: BlogPost, rhs: BlogPost) => {
 	const lhsTime = new Date(lhs.date).getTime();

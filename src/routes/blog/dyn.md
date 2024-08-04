@@ -1,11 +1,12 @@
 ---
 title: Dynamic blog post!
 slug:  dyn
-date:  8-2-2024
+date:  2024-08-04
 hidden: false
 tags:
   - x
   - y
+  - $hc
 ---
 
 **Hello** from a *"dynamic"* route...
