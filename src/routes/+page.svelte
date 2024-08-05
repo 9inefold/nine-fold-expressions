@@ -12,7 +12,7 @@
 	<div />
 </body>
 
-<style type="scss">
+<style lang="scss">
 	h1#jittery {
 		font-family: 'Petscopfont', Fallback, sans-serif;
 		text-shadow: rgb(249, 219, 193) 1px 0 10px;

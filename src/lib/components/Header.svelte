@@ -1,12 +1,12 @@
 <script>
 	import { base } from '$app/paths';
 	import { homepage } from '$lib/config';
-	import Logo from './basic/Logo.svelte'
+	import Logo from '$components/basic/Logo.svelte'
 </script>
 
 <header>
 	<a href="{homepage}">
-		<Logo size={60} animated={true} />
+		<Logo size={60} />
 	</a>
 	<nav>
 		<ul>
@@ -23,6 +23,7 @@
 <style>
 	header {
 		background: rgb(87, 58, 176);
+		background: ivory;
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: space-between;
