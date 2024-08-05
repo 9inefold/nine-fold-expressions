@@ -48,27 +48,4 @@
       background-position: top right;
     }
   }
-
-  /*
-  .bg::after {
-    $color-bright: red;
-    $color-dark: magenta;
-    --line-width: 2px;
-    --line-gap:   3px;
-
-    content: "";
-    inset: 0;
-    position: absolute;
-
-    background: repeating-radial-gradient(
-      circle at top left,
-      $color-bright,
-      $color-dark var(--line-gap),
-      $color-dark calc(var(--line-width) + var(--line-gap)),
-      $color-bright calc((var(--line-width) + var(--line-gap)) * 2)
-    ), url("/images/space-bg.gif");
-    background-blend-mode: color-dodge;
-    opacity: 70%;
-  }
-  */
 </style>

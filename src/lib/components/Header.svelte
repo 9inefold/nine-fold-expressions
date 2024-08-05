@@ -23,7 +23,7 @@
 <style>
 	header {
 		background: rgb(87, 58, 176);
-		background: ivory;
+		background: rgb(200, 228, 158);
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: space-between;

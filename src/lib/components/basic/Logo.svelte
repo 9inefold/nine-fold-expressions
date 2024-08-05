@@ -39,7 +39,7 @@
     height={size}
     width={size}
     on:mouseleave={() => progress.set(0)}
-    on:mouseenter={() => progress.set(45)}
+    on:mouseenter={() => progress.set(22.5)}
     style="transform:rotate({$progress}deg)"
   >
     <slot />
