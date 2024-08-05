@@ -1,8 +1,9 @@
 <script lang="ts">
   export let text: string;
+	export let onhover: boolean = false;
 </script>
 
-<span class="jittery">
+<span class="jittery{onhover ? '-sel' : ''}">
   {#each text as c, i}
     {#if c != ' '}
       <span style="animation-delay: -{i}70ms;">{c}</span>
@@ -18,6 +19,19 @@
   	color: white;
     white-space: nowrap;
   	display: inline-block
+  }
+
+	.jittery-sel {
+		span {
+			color: white;
+    	white-space: nowrap;
+  		display: inline-block
+		}
+    &:hover {
+			span {
+				animation: jitter 600ms linear infinite;
+			}
+		}
   }
 
   @mixin t($tl, $tr, $rot, $col: #663399) {

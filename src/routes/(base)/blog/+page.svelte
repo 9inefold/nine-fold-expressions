@@ -1,8 +1,7 @@
 <script lang="ts">
   import { url } from '$lib/config';
-  import { filteredPostTable } from '$util';
+  import { filteredPostTable, blogUrl } from '$util';
   import type { BlogPost } from '$util/types';
-  import { base } from '$app/paths';
   import Jittery from '$lib/components/basic/Jittery.svelte';
 </script>
 
@@ -10,7 +9,7 @@
 <p id="pet">This is my blog...</p>
 
 {#each filteredPostTable as post}
-  <a href="{base}/blog/{post.slug}">
+  <a href="{blogUrl}/{post.slug}">
     <button>
       {post.title}
     </button>

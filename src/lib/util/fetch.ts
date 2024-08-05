@@ -6,13 +6,17 @@ const tagAliases: Map<string, string> = new Map<string, string>([
 ]);
 
 export const fetchPosts = (doRender: boolean = false): BlogPost[] => {
-	const imports = import.meta.glob('$routes/blog/*.md', {eager: true});
+	const flat = import.meta.glob('$routes/*/*.md', {eager: true});
+	const nested = import.meta.glob('$routes/*/*/*.md', {eager: true});
+	const imports = { ...flat, ...nested };
 	const posts: BlogPost[] = [];
 
 	for (const path in imports) {
 		const post = imports[path] as any;
 		if (post) {
 			const render = doRender && post.default.render;
+			if (!post.metadata.slug)
+				post.metadata.slug = getSlug(path);
       posts.push({
 				...post.metadata,
 				html: render ? post.default.render()?.html : undefined
@@ -38,7 +42,20 @@ export const filterPosts = (posts: BlogPost[]): BlogPost[] => {
 		});
 };
 
-const mapTags = (tags: string[]): string[] => {
+function getSlug(path: string): string {
+	const pathSlices = path.split(/[\\\/]/).slice(-2);
+	if (pathSlices[1] == '+page.md') {
+		const folder = pathSlices[0];
+		if (folder.match(/\([\w\-]\)/))
+			// Should never get here...
+			return folder.slice(1, -1);
+		return folder;
+	}
+	return pathSlices[1].slice(0, -3);
+}
+
+
+function mapTags(tags: string[]): string[] {
 	return tags.map((tag) => {
 		if (tagAliases.has(tag))
 			return tagAliases.get(tag) as string;
@@ -46,7 +63,7 @@ const mapTags = (tags: string[]): string[] => {
 	})
 }
 
-const dateSort = (lhs: BlogPost, rhs: BlogPost) => {
+function dateSort(lhs: BlogPost, rhs: BlogPost) {
 	const lhsTime = new Date(lhs.date).getTime();
 	const rhsTime = new Date(rhs.date).getTime();
 	return lexComp(lhsTime, rhsTime);

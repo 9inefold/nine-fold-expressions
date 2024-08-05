@@ -1,6 +1,8 @@
 <script lang="ts">
   import type { BlogPost } from '$util/types';
   import dateformat from 'dateformat';
+  import Jittery from '$components/basic/Jittery.svelte';
+  import Post from '$components/Post.svelte'
 
   export let data: { post: BlogPost };
 	$: ({ post } = data);
@@ -10,12 +12,8 @@
   };
 </script>
 
-<article>
-  <h1>{post.title}</h1>
-  <p>Published on: {formatDate(post.date)}</p>
-  {#if post.updated}
-    <p>Updated on: {formatDate(post.updated)}</p>
-  {/if}
-  <p>Tags: {post.tags?.join(', ')}</p>
+{#if post}
+<Post post={post}>
   {@html post.html}
-</article>
+</Post>
+{/if}
