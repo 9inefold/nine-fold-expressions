@@ -16,4 +16,6 @@
 <Post post={post}>
   {@html post.html}
 </Post>
+{:else}
+<h1>Fatal error.</h1>
 {/if}
