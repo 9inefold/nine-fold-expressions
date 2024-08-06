@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { homepage, debug } from '$lib/config';
+	import { base, homepage, debug } from '$lib/config';
   import Jittery from '$components/basic/Jittery.svelte';
   import GradientBg from '$lib/components/GradientBg.svelte'
   import '$styles/style.scss'
@@ -46,7 +46,7 @@
 />
 
 <GradientBg
-  href="/images/grainy-bg.gif"
+  href="{base}/images/grainy-bg.gif"
   position="{$coords.x}px {$coords.y}px"
   slideSpeed={{x: vsx, y: vsy}}
   light="rgba({rgb_light}, {$a_light})"

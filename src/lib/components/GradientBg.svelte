@@ -1,7 +1,8 @@
 <script lang="ts">
+  import { base } from '$lib/config';
   type Pos = { x: number; y:number; };
 
-  export let href  = "/images/space-bg.gif";
+  export let href  = `${base}/images/space-bg.gif`;
   export let position = "top left";
   export let slide = true;
   export let slideSpeed: Pos = { x: 10, y: 5 };

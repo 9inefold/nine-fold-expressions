@@ -1,6 +1,6 @@
 import { dev } from '$app/environment';
 export { blogUrl } from '$util';
-import { base } from '$app/paths';
+export { base } from '$app/paths';
 
 export const title = '(eight && ...)';
 export const description = 'Eightfold\'s blog';
