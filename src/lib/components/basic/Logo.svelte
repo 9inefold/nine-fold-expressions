@@ -60,7 +60,7 @@
 		background-color: #00000000;
 		touch-action: none;
 
-    mask: url(/images/eightfold-mask.svg) 50% 50% no-repeat;
+    mask: url(/images/eightfold-mask2.svg) 50% 50% no-repeat;
     mask-size: 100%;
 	}
 </style>

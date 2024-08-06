@@ -3,6 +3,7 @@
   import dateformat from 'dateformat';
   import Jittery from '$components/basic/Jittery.svelte';
   import Post from '$components/Post.svelte'
+  import '$styles/style.scss'
 
   export let data: { post: BlogPost };
 	$: ({ post } = data);

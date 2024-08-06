@@ -3,6 +3,7 @@
   import Header from '$components/Header.svelte'
   import Footer from '$components/Footer.svelte'
   import Post from '$components/Post.svelte'
+  import '$styles/style.scss'
 
   export let data: { post: BlogPost, slug?: string };
 	$: ({ post, slug } = data);

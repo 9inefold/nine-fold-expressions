@@ -17,8 +17,8 @@
 
   // let color_light = 255;
   $: color_light = $light;
-  $:  color_dark  = 0;
-  $:  a_dark  = 0.8;
+  $: color_dark  = 0;
+  $: a_dark  = 0.8;
 
   $: sx = 0;
   $: vsx = 10 - sx;
