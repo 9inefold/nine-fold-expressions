@@ -44,7 +44,7 @@
 	}
 
 	#aname {
-		z-index: 11;
+		z-index: 10;
 		height: inherit;
 		left: 0%;
 		width: 100%;
@@ -55,8 +55,10 @@
 	}
 
 	#logo {
+		z-index: 11;
 		padding: .5rem;
 		color: inherit;
+		user-select: all;
 	}
 
 	#name {
