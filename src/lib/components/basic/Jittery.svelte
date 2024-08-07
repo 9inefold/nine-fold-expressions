@@ -16,14 +16,14 @@
 <style lang="scss">
   .jittery span {
     animation: jitter 600ms linear infinite;
-  	color: white;
+  	// color: white;
     white-space: nowrap;
   	display: inline-block
   }
 
 	.jittery-sel {
 		span {
-			color: white;
+			// color: white;
     	white-space: nowrap;
   		display: inline-block
 		}

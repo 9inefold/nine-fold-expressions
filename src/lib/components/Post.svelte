@@ -5,6 +5,7 @@
   import Jittery from '$components/basic/Jittery.svelte';
 
   export let post: BlogPost;
+  export let hoverJitter: boolean = true;
 
   function formatDate(date: string) {
     return dateformat(date, "UTC:mmmm dd, yyyy");
@@ -39,7 +40,7 @@
 </svelte:head>
 
 <article>
-  <h1><Jittery text="{post.title}" /></h1>
+  <h1><Jittery text="{post.title}" onhover={hoverJitter} /></h1>
   <p>Published on: {formatDate(post.date)}</p>
   {#if post.updated}
     <p>Updated on: {formatDate(post.updated)}</p>
