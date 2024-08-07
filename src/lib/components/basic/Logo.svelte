@@ -7,14 +7,23 @@
 
   export let size: number = 32;
   export let animated: boolean = true;
-
+  
   let canvas: HTMLCanvasElement;
   const idname = 'eightfoldLogoCanvas';
+  const maxRot = 22.5;
 
   const progress = tweened(0, {
 		duration: 400,
 		easing: cubicOut
 	});
+
+  $: styleProps = `
+    transform: rotate(${$progress}deg);
+    filter:
+      brightness(${1 + ($progress / maxRot)})
+      hue-rotate(${$progress * 2}deg);
+      
+  `;
 
   onMount(() => {
     if (!animated)
@@ -39,8 +48,8 @@
     height={size}
     width={size}
     on:mouseleave={() => progress.set(0)}
-    on:mouseenter={() => progress.set(22.5)}
-    style="transform:rotate({$progress}deg)"
+    on:mouseenter={() => progress.set(maxRot)}
+    style="{styleProps}"
   >
     <slot />
   </canvas>
