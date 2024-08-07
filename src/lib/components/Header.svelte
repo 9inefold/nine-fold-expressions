@@ -1,12 +1,15 @@
 <script>
 	import { base } from '$app/paths';
 	import { title, homepage } from '$lib/config';
+	import Jittery from '$components/basic/Jittery.svelte';
 	import Logo from '$components/basic/Logo.svelte'
 </script>
 
 <header>
 	<a id="aname" href="{homepage}">
-		<h1 id="name">{title}</h1>
+		<h1 id="name">
+			<Jittery text="{title}" onhover={true} />
+		</h1>
 	</a>
 	<div class="subheader">
 		<a id="logo" href="{homepage}">
@@ -26,11 +29,14 @@
 </header>
 
 <style lang="scss">
+	@import '../styles/variables';
+
 	header {
 		background: rgb(87, 58, 176);
 		background: rgb(200, 228, 158);
 		align-items: center;
 		justify-content: center;
+		border-top-left-radius: $border-radius;
 	}
 
 	.subheader {
@@ -55,10 +61,10 @@
 	}
 
 	#logo {
-		z-index: 11;
 		padding: .5rem;
 		color: inherit;
 		user-select: all;
+		z-index: 11;
 	}
 
 	#name {
@@ -73,6 +79,7 @@
 
 	nav {
 		vertical-align: center;
+		z-index: 11;
 	}
 
 	ul {

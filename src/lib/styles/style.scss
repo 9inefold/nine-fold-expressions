@@ -1,5 +1,6 @@
 // @use 'base';
 @import 'fonts';
+@import 'variables';
 
 $background-color: white;
 $primary-color: #581638;
@@ -12,6 +13,8 @@ body {
   font-family:
     'Courier Prime', 'Trebuchet MS', 'Lucida Sans Unicode',
     'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  border-top-left-radius:     $border-radius;
+  border-bottom-right-radius: $border-radius;
 }
 
 h1 {
