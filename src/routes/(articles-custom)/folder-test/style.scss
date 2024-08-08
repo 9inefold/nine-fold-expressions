@@ -1,14 +1,9 @@
-// @use 'base';
-@import 'fonts';
-@import 'variables';
-
-$background-color: white;
-$primary-color: $light-eggplant;
-$text-color: $tea;
+$border-radius-px: 15px;
+$border-radius: $border-radius-px $border-radius-px;
 
 body {
-  background: $primary-color;
-  color: $text-color;
+  background: white;
+  color: teal;
   text-align: center;
   font-family:
     'Courier Prime', 'Trebuchet MS', 'Lucida Sans Unicode',
@@ -17,19 +12,10 @@ body {
   border-bottom-right-radius: $border-radius;
 }
 
-h1 {
-  font-family: 'Petscopfont', Fallback, sans-serif;
-}
-
 html {
 	scroll-behavior: smooth;
 	font-size: 18px;
 	width: 100%;
-  background: $background-color;
+  background: black;
   overflow: hidden;
-}
-
-#svelte-root {
-	height: 100%;
-	position: relative;
 }

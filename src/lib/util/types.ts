@@ -4,6 +4,7 @@ export type BlogPost = {
   tags:       string[],
   keywords:   string[],
   excerpt:    string,
+
   hidden:     boolean,
   date:       string,
   updated?:   string,

@@ -50,7 +50,7 @@
 />
 
 <GradientBg
-  href="{base}/images/grainy-bg.gif"
+  href="@images/grainy-bg.gif"
   position="{$coords.x}px {$coords.y}px"
   slideSpeed={{x: vsx, y: vsy}}
   light="rgba({rgb_light}, {alpha_light})"

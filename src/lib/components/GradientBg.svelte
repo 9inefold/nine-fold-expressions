@@ -1,8 +1,9 @@
 <script lang="ts">
+  import { makeCssUrl } from "$util/url";
   import { base } from '$lib/config';
   type Pos = { x: number; y:number; };
 
-  export let href  = `${base}/images/space-bg.gif`;
+  export let href  = `/images/space-bg.gif`;
   export let position = "top left";
   export let slide = true;
   export let slideSpeed: Pos = { x: 10, y: 5 };
@@ -11,6 +12,7 @@
   export let width = 2;
   export let gap   = 3;
 
+  $: cssurl = makeCssUrl(href);
   $: style = `
   background:
     repeating-radial-gradient(
@@ -19,7 +21,7 @@
       ${dark}  ${width}px,
       ${dark}  ${width + gap}px,
       ${light} ${width + gap * 2}px
-    ), url("${href}");
+    ), ${cssurl};
   `;
   $: style_slide = `
     animation-duration:${slideSpeed.y}s,${slideSpeed.x}s;
@@ -48,6 +50,7 @@
     position: absolute;
     z-index: -11;
     width: 100%;
+    background-size: contain;
     opacity: 100%;
     top: 0px;
     bottom: 0;

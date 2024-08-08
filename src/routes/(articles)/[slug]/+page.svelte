@@ -1,4 +1,6 @@
 <script lang="ts">
+  import Header from '$components/Header.svelte'
+  import Footer from '$components/Footer.svelte'
   import type { BlogPost } from '$util/types';
   import dateformat from 'dateformat';
   import Jittery from '$components/basic/Jittery.svelte';
@@ -13,6 +15,8 @@
   };
 </script>
 
+<Header />
+
 {#if post}
 <Post post={post}>
   {@html post.html}
@@ -20,3 +24,5 @@
 {:else}
 <h1>Fatal error.</h1>
 {/if}
+
+<Footer />

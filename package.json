@@ -20,6 +20,7 @@
 		"@sveltejs/adapter-static": "^2.0.3",
 		"@sveltejs/kit": "^1.20.4",
 		"@types/dateformat": "^5.0.2",
+		"css-doodle": "^0.39.2",
 		"dateformat": "^5.0.3",
 		"mdsvex": "^0.11.2",
 		"postcss": "^8.4.40",

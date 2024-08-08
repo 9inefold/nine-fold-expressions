@@ -3,10 +3,10 @@
   import Header from '$components/Header.svelte'
   import Footer from '$components/Footer.svelte'
   import Post from '$components/Post.svelte'
-  import '$styles/style.scss'
+  import GradientBg from '$components/GradientBg.svelte';
 
-  export let data: { post: BlogPost, slug?: string };
-	$: ({ post, slug } = data);
+  export let data: { post: BlogPost };
+	$: ({ post } = data);
 </script>
 
 {#if post}
@@ -15,8 +15,6 @@
   <slot />
 </Post>
 <Footer />
-{:else if slug}
-<h1>Fatal error with "{slug}"</h1>
 {:else}
 <h1>Fatal error.</h1>
 {/if}

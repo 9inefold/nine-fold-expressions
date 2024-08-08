@@ -5,8 +5,9 @@
   import Jittery from '$lib/components/basic/Jittery.svelte';
 </script>
 
-<h1><Jittery text="Hi, I'm eightfold!" /></h1>
-<p id="pet">This is my blog...</p>
+<h1>
+  <Jittery text="All blog posts:" onhover={true} />
+</h1>
 
 {#each filteredPostTable as post}
   <a href="{blogUrl}/{post.slug}">
@@ -18,7 +19,7 @@
 {/each}
 
 <style lang="scss">
-	h1, p#pet {
+	h1 {
 		font-family: 'Petscopfont', Fallback, sans-serif;
 	}
 </style>

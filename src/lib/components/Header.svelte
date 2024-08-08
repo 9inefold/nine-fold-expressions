@@ -17,12 +17,8 @@
 		</a>
 		<nav>
 			<ul>
-				<li>
-					<a href="{base}/blog">Blog</a>
-				</li>
-				<li>
-					<a href="{base}/about">About</a>
-				</li>
+				<a href="{base}/blog">Blog</a>
+				<a href="{base}/about">About</a>
 			</ul>
 		</nav>
 	</div>
@@ -32,8 +28,8 @@
 	@import '../styles/variables';
 
 	header {
-		background: rgb(87, 58, 176);
-		background: rgb(200, 228, 158);
+		background: $cream;
+		background: hsl(55, 80%, 86%);
 		align-items: center;
 		justify-content: center;
 		border-top-left-radius: $border-radius;
@@ -46,7 +42,14 @@
 	}
 
 	a {
-		text-decoration: none;
+		&:hover {
+			filter: brightness(110%);
+			text-decoration: none;
+		}
+		&:link, &:active, &:visited{
+			color: inherit;
+			text-decoration: none;
+		}
 	}
 
 	#aname {
@@ -58,13 +61,7 @@
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: center;
-	}
-
-	#logo {
-		padding: .5rem;
-		color: inherit;
-		user-select: all;
-		z-index: 11;
+		vertical-align: middle;
 	}
 
 	#name {
@@ -77,6 +74,31 @@
 		animation: ping 4s linear 1s infinite normal both;
 	}
 
+	@media (480px < width <= 720px) {
+		#name {
+			font-size: 28px;
+		}
+	}
+
+	@media (width <= 480px) {
+		#aname {
+			display: inline;
+		}
+
+		#name {
+			font-size: 24px;
+			margin-left: 25%;
+			margin-top: 30px;
+		}
+	}
+
+	#logo {
+		padding: .5rem;
+		color: inherit;
+		user-select: all;
+		z-index: 11;
+	}
+
 	nav {
 		vertical-align: center;
 		z-index: 11;
@@ -84,6 +106,7 @@
 
 	ul {
 		position: relative;
+		color: $tea;
 		transform: translateY(25%);
 		padding: 1rem;
 		margin: 0;

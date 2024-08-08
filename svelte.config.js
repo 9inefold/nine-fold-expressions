@@ -16,7 +16,9 @@ const config = {
 		}),
 		mdsvex({
 			extensions: [...md_extensions],
-			layout: {}
+			layout: {
+				empty: "./src/layouts/empty.svelte",
+			}
 		})
 	],
 	kit: {

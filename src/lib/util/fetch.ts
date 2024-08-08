@@ -1,4 +1,5 @@
 import type { BlogPost } from "$util/types";
+import { makeUrl } from "$util/url";
 // import striptags from 'striptags';
 
 const tagAliases: Map<string, string> = new Map<string, string>([
