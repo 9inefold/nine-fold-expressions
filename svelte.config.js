@@ -13,7 +13,7 @@ const stub = (name) => {
 
 const aliases = {
 	'$routes': 			'src/routes',
-	'$layouts':			'src/layouts',
+	'$layouts':			'src/layout',
 	"$lib":					'src/lib',
 	'$components': 	'src/lib/components',
 	'$styles': 			'src/lib/styles',
