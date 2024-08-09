@@ -18,7 +18,7 @@ tags:
 </script>
 
 <GradientBg
-  href="@images/grainy-bg.gif"
+  href="@images/clothesline.gif"
   light="rgba(0,0,0,0)"
   dark="rgba(0,0,0,0)"
 />

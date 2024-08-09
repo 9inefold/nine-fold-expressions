@@ -25,7 +25,7 @@
 </header>
 
 <style lang="scss">
-	@import '../styles/variables';
+	@import '$styles/variables';
 
 	header {
 		background: $cream;

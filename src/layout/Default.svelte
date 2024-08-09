@@ -22,7 +22,12 @@
   @import '$styles/variables';
 
   .my-layout {
-    background: white;
+    $white-partial: rgba(255, 255, 255, 0.7);
+    background: linear-gradient(to right, 
+      $white-partial, 
+      white, white, 
+      $white-partial
+    );
     color: teal;
     text-align: center;
     border-top-left-radius:     $border-radius;
