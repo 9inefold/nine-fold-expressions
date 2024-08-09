@@ -18,8 +18,10 @@ export const fetchPosts = (doRender: boolean = false): BlogPost[] => {
 			const render = doRender && post.default.render;
 			if (!post.metadata.slug)
 				post.metadata.slug = getSlug(path);
+			const comp = post.metadata.component;
       posts.push({
 				...post.metadata,
+				component: comp ? comp as string : false,
 				html: render ? post.default.render()?.html : undefined
 			});
     }

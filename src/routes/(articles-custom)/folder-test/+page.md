@@ -2,6 +2,8 @@
 title: Folder test blog post!
 date:  2024-08-05
 hidden: false
+excerpt: This is a test for dynamic routing with custom styles.
+component: default
 tags:
   - y
   - $hc
@@ -12,7 +14,7 @@ tags:
 <script>
   import Image from '$components/basic/Image.svelte'
   import GradientBg from '$components/GradientBg.svelte';
-  import './style.scss';
+  // import './ft-style.scss';
 </script>
 
 <GradientBg

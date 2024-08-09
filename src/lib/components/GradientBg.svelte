@@ -1,10 +1,10 @@
 <script lang="ts">
   import { makeCssUrl } from "$util/url";
-  import { base } from '$lib/config';
   type Pos = { x: number; y:number; };
 
   export let href  = `/images/space-bg.gif`;
   export let position = "top left";
+  export let invert = false;
   export let slide = true;
   export let slideSpeed: Pos = { x: 10, y: 5 };
   export let light = "red";
@@ -14,6 +14,8 @@
 
   $: cssurl = makeCssUrl(href);
   $: style = `
+  filter:
+    invert(${invert ? 100 : 0}%);
   background:
     repeating-radial-gradient(
       circle at ${position},

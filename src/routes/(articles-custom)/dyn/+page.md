@@ -1,8 +1,8 @@
 ---
 title: Dynamic blog post!
-slug:  dyn
 date:  2024-08-04
 hidden: false
+layout: false
 tags:
   - x
   - y

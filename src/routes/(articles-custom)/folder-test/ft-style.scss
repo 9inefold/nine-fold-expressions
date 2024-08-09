@@ -1,5 +1,4 @@
-$border-radius-px: 15px;
-$border-radius: $border-radius-px $border-radius-px;
+@import '$styles/variables';
 
 body {
   background: white;

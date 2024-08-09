@@ -2,14 +2,7 @@
 @import 'fonts';
 @import 'variables';
 
-$background-color: white;
-$primary-color: $light-eggplant;
-$text-color: $tea;
-
 body {
-  background: $primary-color;
-  color: $text-color;
-  text-align: center;
   font-family:
     'Courier Prime', 'Trebuchet MS', 'Lucida Sans Unicode',
     'Lucida Grande', 'Lucida Sans', Arial, sans-serif;

@@ -1,11 +1,24 @@
 import adapter from '@sveltejs/adapter-static';
 import { vitePreprocess } from '@sveltejs/kit/vite';
 import { sveltePreprocess } from 'svelte-preprocess';
-
 import { mdsvex } from 'mdsvex';
 
 const md_extensions = [".md", ".svelte.md", ".svx"];
 const base_path = (process.env.NODE_ENV === 'production') ? '/eight-fold-expressions' : '';
+const layouts = './src/layouts';
+
+const stub = (name) => {
+	return `${layouts}/${name}-s.svelte`;
+}
+
+const aliases = {
+	'$routes': 			'src/routes',
+	'$layouts':			'src/layouts',
+	"$lib":					'src/lib',
+	'$components': 	'src/lib/components',
+	'$styles': 			'src/lib/styles',
+	'$util':				'src/lib/util',
+};
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -13,23 +26,29 @@ const config = {
 	preprocess: [
 		sveltePreprocess({
 			// postcss: true
+			scss: {
+				importer: function(url, prev) {
+					if (!url.startsWith('$'))
+						return null;
+					const parts = url.split('/');
+					if (!parts?.length)
+						return null;
+					const route = aliases[parts.at(0)];
+					if (!route)
+						return null;
+					return {
+						file: ['.', route, ...parts.slice(1)].join('/')
+					};
+				}
+			}
 		}),
 		mdsvex({
 			extensions: [...md_extensions],
-			layout: {
-				empty: "./src/layouts/empty.svelte",
-			}
 		})
 	],
 	kit: {
 		adapter: adapter(),
-		alias: {
-			'$routes': 			'src/routes',
-			"$lib":					'src/lib',
-			'$components': 	'src/lib/components',
-			'$styles': 			'src/lib/styles',
-			'$util':				'src/lib/util',
-		},
+		alias: aliases,
 		prerender: {
 			entries: ["*", "/blog"],
 			crawl: true,

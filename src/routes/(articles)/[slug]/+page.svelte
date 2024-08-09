@@ -1,28 +1,45 @@
 <script lang="ts">
-  import Header from '$components/Header.svelte'
-  import Footer from '$components/Footer.svelte'
   import type { BlogPost } from '$util/types';
-  import dateformat from 'dateformat';
-  import Jittery from '$components/basic/Jittery.svelte';
   import Post from '$components/Post.svelte'
+  import GradientBg from '$components/GradientBg.svelte'
+  import DefaultLayout from '$components/DefaultLayout.svelte'
   import '$styles/style.scss'
 
   export let data: { post: BlogPost };
 	$: ({ post } = data);
-
-  const formatDate = (date: string) => {
-    return dateformat(date, "UTC:mmmm dd, yyyy");
-  };
 </script>
 
-<Header />
-
 {#if post}
-<Post post={post}>
-  {@html post.html}
-</Post>
+<DefaultLayout>
+  <GradientBg />
+  <Post post={post}>
+    {@html post.html}
+  </Post>
+</DefaultLayout>
 {:else}
-<h1>Fatal error.</h1>
+<div class="wrap">
+  <GradientBg
+    href="@images/blink.gif"
+    light="rgba(0,0,0,0)"
+    dark="rgba(0,0,0,0)"
+    invert={true}
+  />
+  <h1 id="err">
+    Fatal error.
+  </h1>
+</div>
 {/if}
 
-<Footer />
+<style lang="scss">
+  #err {
+    color: black;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 5px;
+    width: fit-content;
+    font-size: 60px;
+  }
+
+  .wrap {
+    text-align: center;
+  }
+</style>
