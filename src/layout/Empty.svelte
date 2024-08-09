@@ -13,4 +13,7 @@
 </div>
 
 <style lang="scss">
+  #empty {
+    text-align: center;
+  }
 </style>

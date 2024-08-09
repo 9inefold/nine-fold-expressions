@@ -50,8 +50,9 @@ const config = {
 		adapter: adapter(),
 		alias: aliases,
 		prerender: {
-			entries: ["*", "/blog"],
-			crawl: true,
+			// entries: ["*", "/blog"],
+			// crawl: true,
+			handleHttpError: 'warn',
 		},
     paths: { base: base_path, }
 	}
