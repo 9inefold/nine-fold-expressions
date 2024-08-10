@@ -14,7 +14,9 @@
   @import '$styles/variables';
 
   .base-layout {
-    background: $primary-color;
+    background: linear-gradient(
+      $light-eggplant, $eggplant
+    );
     color: $text-color;
     text-align: center;
     border-top-left-radius:     $border-radius;

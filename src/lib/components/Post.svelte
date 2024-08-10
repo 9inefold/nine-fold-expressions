@@ -32,6 +32,11 @@
     <meta name="twitter:description" content={post.excerpt} />
   {/if}
 
+  {#if post.image}
+    <meta property="og:image"  content="{post.image}" />
+    <meta name="twitter:image" content="{post.image}" />
+  {/if}
+
   <link rel="canonical" href="{blogUrl}/{post.slug}" />
 
   <title>{post.title} - {title}</title>

@@ -9,6 +9,7 @@ export type BlogPost = {
   hidden:     boolean,
   date:       string,
   updated?:   string,
+  image?:     string,
   related:    BlogPost[],
   html?:      string,
 };

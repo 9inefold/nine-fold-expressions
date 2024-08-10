@@ -15,10 +15,17 @@ export const fetchPosts = (doRender: boolean = false): BlogPost[] => {
 	for (const path in imports) {
 		const post = imports[path] as any;
 		if (post) {
-			const render = doRender && post.default.render;
-			if (!post.metadata.slug)
+			if (!post.metadata.slug) {
 				post.metadata.slug = getSlug(path);
+			}
+			if (post.metadata.image?.length) {
+				post.metadata.image =
+				makeUrl(post.metadata.image);
+			}
+			
+			const render = doRender && post.default.render;
 			const comp = post.metadata.component;
+
       posts.push({
 				...post.metadata,
 				component: comp ? comp as string : false,

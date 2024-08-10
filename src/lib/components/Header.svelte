@@ -25,11 +25,14 @@
 </header>
 
 <style lang="scss">
+	@use 'sass:color';
 	@import '$styles/variables';
 
 	header {
-		background: $cream;
-		background: hsl(55, 80%, 86%);
+		$lighter: color.mix($sulfur-smoke, white, 70%);
+		background: linear-gradient(to right,
+			$sulfur-smoke, $lighter, $sulfur-smoke
+		);
 		align-items: center;
 		justify-content: center;
 		border-top-left-radius: $border-radius;
