@@ -1,5 +1,6 @@
 <script lang="ts">
   import { base } from '$app/paths';
+  import { url } from '$lib/config';
   import Footer from '$components/Footer.svelte';
   import GradientBg from '$components/GradientBg.svelte'
   import '$styles/style.scss'
@@ -13,12 +14,12 @@
     invert={true}
   />
   <h1 id="err">
-    Error...
+    Error 404...
   </h1>
   <br>
-  <img src="/images/winfun.gif" alt="R.I.P.">
+  <img src="{url}/images/winfun.gif" alt="R.I.P.">
   <div id="return">
-    <a href="{base}/main">Go back.</a>
+    <a href="{url}/main">Go back.</a>
   </div>
   <Footer />
 </div>

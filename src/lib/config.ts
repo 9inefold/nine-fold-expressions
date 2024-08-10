@@ -2,7 +2,7 @@ import { dev } from '$app/environment';
 export { base } from '$app/paths';
 //export { blogUrl } from '$util';
 import { base } from '$app/paths';
-export const blogUrl: string = `${base}`
+export const blogUrl: string = base
 
 export const title = '(eight && ...)';
 export const description = 'Eightfold\'s blog';
@@ -15,6 +15,8 @@ export const debug = dev && debugInternal;
 
 export const keywords = [
 	'Eightfold',
+	'8ightfold',
+	'eight-fold-expressions',
 	'Svelte',
 	'SvelteKit',
 	'Blog',

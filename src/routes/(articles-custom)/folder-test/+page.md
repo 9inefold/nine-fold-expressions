@@ -1,6 +1,6 @@
 ---
 title: Folder test blog post!
-date:  2024-08-05
+date:  2024-08-10
 hidden: false
 excerpt: This is a test for dynamic routing with custom styles.
 image: /cover/folder-test.png

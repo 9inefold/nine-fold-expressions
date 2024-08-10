@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { BlogPost } from '$util/types';
-  import { title, blogUrl, keywords } from '$lib/config'
+  import { title, url, blogUrl, keywords } from '$lib/config'
   import dateformat from 'dateformat';
   import Jittery from '$components/basic/Jittery.svelte';
 
@@ -24,20 +24,21 @@
 </script>
 
 <svelte:head>
+  <meta name="creator" content="eightfold" />
   <meta name="keywords" content={getKeywords().join(', ')} />
 
   {#if post.excerpt}
-    <meta name="description" content={post.excerpt} />
-    <meta property="og:description" content={post.excerpt} />
+    <meta name="description"         content={post.excerpt} />
+    <meta property="og:description"  content={post.excerpt} />
     <meta name="twitter:description" content={post.excerpt} />
   {/if}
 
   {#if post.image}
-    <meta property="og:image"  content="{post.image}" />
-    <meta name="twitter:image" content="{post.image}" />
+    <meta property="og:image"  content="{url}{post.image}" />
+    <meta name="twitter:image" content="{url}{post.image}" />
   {/if}
 
-  <link rel="canonical" href="{blogUrl}/{post.slug}" />
+  <link rel="canonical" href="{url}/{post.slug}" />
 
   <title>{post.title} - {title}</title>
   <meta property="og:title"  content="{post.title} - {title}" />
@@ -45,6 +46,7 @@
 </svelte:head>
 
 <article>
+<main>
   <h1><Jittery text="{post.title}" onhover={hoverJitter} /></h1>
   <p>Published on: {formatDate(post.date)}</p>
   {#if post.updated}
@@ -52,4 +54,5 @@
   {/if}
   <p>Tags: {post.tags?.join(', ')}</p>
   <slot />
+</main>
 </article>
