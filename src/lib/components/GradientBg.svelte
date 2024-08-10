@@ -30,11 +30,7 @@
   `;
 </script>
 
-{#if slide}
-  <div id="bg" class="slide" style="{style}{style_slide}" />
-{:else}
-  <div id="bg" style="{style};" />
-{/if}
+<div id="bg" class:slide={slide} style="{style}{style_slide}" />
 
 <style lang="scss">
   .slide {
@@ -49,14 +45,16 @@
     background-blend-mode: color-dodge;
     filter: contrast(1);
     
-    position: absolute;
+    position: fixed;
     z-index: -11;
     width: 100%;
+    height: 100%;
+    height: 100vh;
     background-size: contain;
     opacity: 100%;
+    left: 0px;
     top: 0px;
     bottom: 0;
-    left: 0px;
   }
 
   @keyframes slide-x {

@@ -12,8 +12,8 @@
 </svelte:head>
 
 <DefaultLayout>
+  <GradientBg />
   <main>
-    <GradientBg />
     <slot />
   </main>
 </DefaultLayout>

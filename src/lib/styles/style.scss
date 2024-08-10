@@ -8,6 +8,24 @@ body {
     'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   border-top-left-radius:     $border-radius;
   border-bottom-right-radius: $border-radius;
+  overflow-y: scroll;
+  width: 70%;
+  margin-top: 15px;
+  margin-left: 15%;
+}
+
+@media (480px < width <= 1080px) {
+  body {
+    width: 90%;
+    margin: 5%;
+  }
+}
+
+@media (width <= 480px) {
+  body {
+    width: auto;
+    margin: 5%;
+  }
 }
 
 h1 {
@@ -19,7 +37,7 @@ html {
 	font-size: 18px;
 	width: 100%;
   background: $background-color;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 #svelte-root {

@@ -17,8 +17,12 @@
 		</a>
 		<nav>
 			<ul>
-				<a href="{base}/blog">Blog</a>
-				<a href="{base}/about">About</a>
+				<a class="atext" href="{base}/blog">
+					<div class="text">Blog</div>
+				</a>
+				<a class="atext" href="{base}/about">
+					<div class="text">About</div>
+				</a>
 			</ul>
 		</nav>
 	</div>
@@ -45,14 +49,21 @@
 	}
 
 	a {
-		&:hover {
-			filter: brightness(110%);
-			text-decoration: none;
-		}
+		height: 100%;
 		&:link, &:active, &:visited{
 			color: inherit;
 			text-decoration: none;
 		}
+	}
+
+	.atext:hover {
+		filter: hue-rotate(-30deg) brightness(130%);
+		transform: rotate(22.5deg);
+	}
+
+	.text {
+		height: 50%;
+		transform: translateY(75%);
 	}
 
 	#aname {
@@ -110,8 +121,11 @@
 	ul {
 		position: relative;
 		color: $tea;
-		transform: translateY(25%);
-		padding: 1rem;
+		// transform: translateY(25%);
+		height: 100%;
+		// padding: 1rem;
+		padding-left: 1rem;
+		padding-right: 1rem;
 		margin: 0;
 		list-style-type: none;
 		display: flex;

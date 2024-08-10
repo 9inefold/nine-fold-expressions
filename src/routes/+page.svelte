@@ -1,10 +1,16 @@
 <script lang="ts">
+	import { onMount, afterUpdate } from 'svelte';
 	import { base, homepage, debug } from '$lib/config';
   import Jittery from '$components/basic/Jittery.svelte';
   import GradientBg from '$lib/components/GradientBg.svelte'
+  import { spring } from 'svelte/motion';
   import '$styles/style.scss'
 
-  import { spring } from 'svelte/motion';
+	onMount(() => {
+		const style = document.documentElement.style;
+		style.overflowY = 'hidden';
+		return () => { style.overflowY = 'scroll'; };
+	});
 
 	$: outerWidth = 0;
 	$: outerHeight = 0;
@@ -32,6 +38,9 @@
 <svelte:window bind:outerWidth bind:outerHeight />
 
 <svelte:document
+	on:pointerleave={(e) => {
+		coords.set({ x: (e.clientX / 2), y: (e.clientY / 2) });
+	}}
   on:mousemove={(e) => {
 		const x = Math.max(-100, Math.min(e.clientX, outerWidth * 2));
 		const y = Math.max(-100, Math.min(e.clientY, outerHeight * 2));
@@ -49,44 +58,45 @@
   }}
 />
 
-<GradientBg
-  href="@images/grainy-bg.gif"
-  position="{$coords.x}px {$coords.y}px"
-  slideSpeed={{x: vsx, y: vsy}}
-  light="rgba({rgb_light}, {alpha_light})"
-  dark="rgba(0, 0, 0, 0.8)"
-  width={$size}
-  gap={$size}
-/>
+<div id="noscroll">
+	<GradientBg
+	  href="@images/grainy-bg.gif"
+	  position="{$coords.x}px {$coords.y}px"
+	  slideSpeed={{x: vsx, y: vsy}}
+	  light="rgba({rgb_light}, {alpha_light})"
+	  dark="rgba(0, 0, 0, 0.8)"
+	  width={$size}
+	  gap={$size}
+	/>
 
-<h1>
-  <a href="{homepage}">
-    <Jittery text="Enter..." onhover={true} />
-  </a>
-</h1>
+	<h1 class:scroll-lock={true}>
+	  <a href="{homepage}">
+	    <Jittery text="Enter..." onhover={true} />
+	  </a>
+	</h1>
 
 {#if debug}
-<div class="controls">
-  <label id="vals">
-		<h3>stiffness ({coords.stiffness})</h3>
-		<input
-			bind:value={coords.stiffness}
-			type="range"
-			min="0.01"
-			max="1"
-			step="0.01"
-		/>
-		<h3>damping ({coords.damping})</h3>
-		<input
-			bind:value={coords.damping}
-			type="range"
-			min="0.01"
-			max="1"
-			step="0.01"
-		/>
-	</label>
+	<div class="controls">
+	  <label id="vals">
+			<h3>stiffness ({coords.stiffness})</h3>
+			<input
+				bind:value={coords.stiffness}
+				type="range"
+				min="0.01"
+				max="1"
+				step="0.01"
+			/>
+			<h3>damping ({coords.damping})</h3>
+			<input
+				bind:value={coords.damping}
+				type="range"
+				min="0.01"
+				max="1"
+				step="0.01"
+			/>
+		</label>
 
-  <label id="speed">
+	  <label id="speed">
 		<h3>[sx, sy]</h3>
 		<input
 			bind:value={sx}
@@ -102,29 +112,31 @@
 			max="10"
 			step="0.01"
 		/>
-	</label>
+		</label>
 
-	<label id="color">
-		<h3>light ({color_light.toFixed(0)}, {$a_light.toFixed(2)})</h3>
-		<input
-			bind:value={color_light}
-			type="range"
-			min="0"
-			max="255"
-			step="1"
-		/>
-		<input
-			bind:value={$a_light}
-			type="range"
-			min="0"
-			max="1"
-			step="0.01"
-		/>
-	</label>
-</div>
+		<label id="color">
+			<h3>light ({color_light.toFixed(0)}, {$a_light.toFixed(2)})</h3>
+			<input
+				bind:value={color_light}
+				type="range"
+				min="0"
+				max="255"
+				step="1"
+			/>
+			<input
+				bind:value={$a_light}
+				type="range"
+				min="0"
+				max="1"
+				step="0.01"
+			/>
+		</label>
+	</div>
 {/if}
+</div>
 
 <style lang="scss">
+
   h1 {
     user-select: none;
     position: absolute;
