@@ -14,7 +14,14 @@ body {
   margin-left: 15%;
 }
 
-@media (480px < width <= 1080px) {
+h1 {
+  font-family: 'Petscopfont', Fallback, sans-serif;
+}
+
+@media (480px < width <= 720px) {
+  h1 {
+    font-size: 24px;
+  }
   body {
     width: 90%;
     margin: 5%;
@@ -22,14 +29,13 @@ body {
 }
 
 @media (width <= 480px) {
+  h1 {
+    font-size: 20px;
+  }
   body {
     width: auto;
     margin: 5%;
   }
-}
-
-h1 {
-  font-family: 'Petscopfont', Fallback, sans-serif;
 }
 
 html {

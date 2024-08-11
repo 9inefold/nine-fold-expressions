@@ -10,7 +10,7 @@ export const url = dev ? 'http://localhost:5173' : 'https://8ightfold.github.io/
 export const homepage = `${url}/main`;
 
 // So I don't accidentally leave this on in release.
-const debugInternal = true;
+const debugInternal = false;
 export const debug = dev && debugInternal;
 
 export const keywords = [

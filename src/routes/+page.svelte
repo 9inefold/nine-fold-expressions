@@ -58,7 +58,7 @@
   }}
 />
 
-<div id="noscroll">
+<div id="block">
 	<GradientBg
 	  href="@images/grainy-bg.gif"
 	  position="{$coords.x}px {$coords.y}px"
@@ -69,7 +69,7 @@
 	  gap={$size}
 	/>
 
-	<h1 class:scroll-lock={true}>
+	<h1>
 	  <a href="{homepage}">
 	    <Jittery text="Enter..." onhover={true} />
 	  </a>
@@ -136,6 +136,17 @@
 </div>
 
 <style lang="scss">
+	#block {
+		position: absolute;
+		width: 100vw;
+		height: 100vh;
+		top: 0;
+		left: 0;
+
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
 
   h1 {
     user-select: none;
@@ -143,8 +154,7 @@
 		display: flex;
   	justify-content: center;
   	align-items: center;
-    width: 100%;
-    height: 100%;
+		font-size: 2em;
   }
 
 	a {

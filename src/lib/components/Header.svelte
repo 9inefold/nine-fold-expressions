@@ -100,9 +100,15 @@
 		}
 
 		#name {
-			font-size: 24px;
+			font-size: 16px;
 			margin-left: 25%;
 			margin-top: 30px;
+		}
+	}
+
+	@media (width < 330px) {
+		#name {
+			display: none;
 		}
 	}
 

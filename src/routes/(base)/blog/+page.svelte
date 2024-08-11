@@ -9,6 +9,8 @@
   <Jittery text="All blog posts:" onhover={true} />
 </h1>
 
+<p>(Buttons are temporary)</p>
+
 {#each filteredPostTable as post}
   <a href="{blogUrl}/{post.slug}">
     <button>

@@ -42,6 +42,8 @@
 	}
 
 	#scrolling {
+		// Workaround for disabling emojis
+		font-family: monospace;
 		white-space: nowrap;
 		animation: my-animation 10s linear infinite;
 	}

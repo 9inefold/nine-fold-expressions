@@ -15,7 +15,7 @@
 
   .base-layout {
     background: linear-gradient(
-      $light-eggplant, $eggplant
+      $light-eggplant, $dark-eggplant
     );
     color: $text-color;
     text-align: center;

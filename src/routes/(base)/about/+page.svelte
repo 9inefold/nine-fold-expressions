@@ -7,17 +7,18 @@
 <div id="block">
   <p>
     Hi, I'm eightfold! A fair amount of people have asked me to make a blog,
-    and I finally have. If you don't know me, I'm mainly a C/C++ programmer
-    who works on some...
+    and I finally have. It was actually more fun to work on than I expected!
+  </p>
+  <p>
+    If you don't know me, I'm mainly a C/C++ programmer who works on some...
     <a 
       href="https://github.com/8ightfold/headless-compiler"
       target="_blank"
       rel="author external noopener"
-    >"insane"</a> 
-    projects.
+    >"insane"</a> projects.
   </p>
   <p>
-    The point of this blog is threefold:
+    The point of this blog is threefold <i>(haha)</i>:
   </p>
   <ul>
     <li>Document and break down parts of my projects.</li>
@@ -35,11 +36,19 @@
   <p>
     While it's great if you're running a business, it's not for a personal site.
     That is the one place where you absolutely should be adding character.
-
+  </p>
+  <p>
     This site was made in a late 90's/early 00's style, as that was what
-    I saw growing up (though, even then it was going out of fashion).
+    I saw growing up (though, even then it was going out of fashion). <br>
 
     And although this <i>is</i> in a retro style, I used Svelte and modern CSS.
+  </p>
+
+  <img src="{url}/images/gear.gif" alt="⚙">
+
+  <p>
+    I'm not 100% sure how much I'll be posting, but hopefully every
+    couple months or so. Eventually I'll move some of it over to Youtube.
   </p>
 </div>
 
@@ -54,18 +63,24 @@
 
   p {
     max-width: 70%;
-    margin-left: 15%;
+    margin-left:  15%;
+    margin-right: 15%;
     text-align: center;
   }
 
   ul {
     max-width: 70%;
-    margin-left: 15%;
+    margin-left:  20%;
+    margin-right: 20%;
     text-align: center;
     padding-left: 0;
   }
 
-  @media (320px < width <= 860px) {
+  @media (400px < width <= 860px) {
+    #block {
+      font-size: 18px;
+      line-height: 2rem;
+    }
     h1 {
       font-size: 24px;
     }
@@ -83,12 +98,9 @@
     }
 	}
 
-  @media (width <= 320px) {
+  @media (width <= 400px) {
     h1 {
       font-size: 16px;
-    }
-		#block {
-      font-size: 12px;
     }
 	}
 
@@ -109,4 +121,9 @@
 			text-decoration: none;
 		}
 	}
+
+  img {
+    font-size: 3em;
+    padding-top: 10px;
+  }
 </style>
