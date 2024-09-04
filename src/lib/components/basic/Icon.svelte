@@ -1,6 +1,6 @@
 <script lang="ts">
   import OptionalLink from '$components/basic/OptionalLink.svelte'
-  import { makeCssUrl } from "$util/url";
+  import { makeUrl, makeCssUrl } from "$util/url";
 
   export let src: string;
   export let alt: string;
@@ -13,7 +13,7 @@
 <OptionalLink href={href} {...$$restProps} style="width:{size}px; height:{size}px;">
 {#if animated}
   <img class="anim"
-    src="/bg/orange-glitter.gif"
+    src="{makeUrl("/bg/orange-glitter.gif")}"
     alt="{alt}"
     height={size}
     width={size}
