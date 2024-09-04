@@ -1,6 +1,7 @@
 <script lang="ts">
   import Post from '$components/Post.svelte'
   import type { BlogPost } from '$util/types';
+  // import 'svelte-highlight/styles/paraiso-dark.css';
   export let post: BlogPost | undefined;
 </script>
 

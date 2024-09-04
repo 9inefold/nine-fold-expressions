@@ -53,6 +53,30 @@
     <p>Updated on: {formatDate(post.updated)}</p>
   {/if}
   <p>Tags: {post.tags?.join(', ')}</p>
-  <slot />
+  <p class="text">
+    <slot />
+  </p>
 </main>
 </article>
+
+<style lang="scss">
+  .text {
+    text-align: left;
+    width: 70%;
+    margin-left: 15%;
+  }
+
+  @media (600px < width <= 1080px) {
+    .text {
+      width: 80%;
+      margin-left: 10%;
+    }
+	}
+
+  @media (width <= 600px) {
+    .text {
+      width: 90%;
+      margin-left: 5%;
+    }
+	}
+</style>

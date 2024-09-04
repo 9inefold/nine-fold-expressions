@@ -1,13 +1,10 @@
 ---
 title: Folder test blog post!
-date:  2024-08-10
-hidden: false
+date:  2024-09-04
+hidden: true
 excerpt: This is a test for dynamic routing with custom styles.
-image: /cover/folder-test.png
 component: default
 tags:
-  - y
-  - $hc
 ---
 
 <!-- markdownlint-disable MD033 -->
@@ -19,11 +16,24 @@ tags:
 </script>
 
 <GradientBg
-  href="@images/kitline.gif"
+  href="@images/clothesline.gif"
   light="rgba(0,0,0,0)"
   dark="rgba(0,0,0,0)"
 />
 
-**Hello** from a *folder test*...
+<CodeBlock lang="cpp">
 
-<Image href="@images/space-bg.gif" />
+```cpp
+struct Xg {
+  virtual ~Xg() = default;
+  virtual Str GetName() { return "X"; }
+};
+
+template <typename T>
+struct X : Xg {
+  virtual ~X() = default;
+  Str GetName() override { return typeid(*this).name(); }
+};
+```
+
+</CodeBlock>

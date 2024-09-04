@@ -14,7 +14,7 @@
     invert={true}
   />
   <h1 id="err">
-    Error 404...
+    Error four-oh-four...
   </h1>
   <br>
   <img src="{url}/images/winfun.gif" alt="R.I.P.">

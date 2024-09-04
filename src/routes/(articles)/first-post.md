@@ -2,7 +2,7 @@
 title: First blog post!
 slug:  first-post
 date:  2024-08-02
-hidden: false
+hidden: true
 tags:
   - y
   - z

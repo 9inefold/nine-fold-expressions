@@ -62,7 +62,7 @@
   />
 {/if}
 
-<style type="scss">
+<style lang="scss">
 	#eightfoldLogoCanvas {
     display: flex;
     padding: 0%;
