@@ -3,6 +3,10 @@ import { vitePreprocess } from '@sveltejs/kit/vite';
 import { sveltePreprocess } from 'svelte-preprocess';
 import { mdsvex } from 'mdsvex';
 
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import rehypeExternalLinks from 'rehype-external-links';
+import rehypeSlug from 'rehype-slug';
+
 const md_extensions = [".md", ".svelte.md", ".svx"];
 const base_path = (process.env.NODE_ENV === 'production') ? '/eight-fold-expressions' : '';
 const layouts = './src/layouts';
@@ -44,6 +48,17 @@ const config = {
 		}),
 		mdsvex({
 			extensions: [...md_extensions],
+			rehypePlugins: [
+				rehypeExternalLinks,
+				rehypeSlug,
+				[
+					rehypeAutolinkHeadings,
+					{
+						behavior: 'wrap',
+						properties: { className: ['heading-link'], title: 'Permalink' },
+					}
+				]
+			]
 		})
 	],
 	kit: {

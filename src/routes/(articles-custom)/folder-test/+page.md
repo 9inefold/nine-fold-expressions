@@ -1,9 +1,9 @@
 ---
 title: Folder test blog post!
 date:  2024-08-10
-hidden: false
+hidden: true
 excerpt: This is a test for dynamic routing with custom styles.
-image: /cover/folder-test.png
+cover: /cover/folder-test.png
 component: default
 tags:
   - y

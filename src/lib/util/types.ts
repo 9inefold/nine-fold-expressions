@@ -10,6 +10,7 @@ export type BlogPost = {
   date:       string,
   updated?:   string,
   image?:     string,
+  cover?:     string,
   related:    BlogPost[],
   html?:      string,
 };

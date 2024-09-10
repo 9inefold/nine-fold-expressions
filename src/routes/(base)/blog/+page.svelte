@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { url } from '$lib/config';
+  import { debug, url } from '$lib/config';
   import { filteredPostTable, blogUrl } from '$util';
   import type { BlogPost } from '$util/types';
   import dateformat from 'dateformat';
@@ -14,7 +14,15 @@
   <Jittery text="All blog posts:" onhover={true} />
 </h1>
 
-<p>(Buttons are temporary)</p>
+{#if debug}
+<button on:click={() => {
+  for (var post of filteredPostTable) {
+    if (post) {
+      console.log(`${post.title}: ${post.slug}`);
+    }
+  }
+}}>Log</button>
+{/if}
 
 <div id="posts">
 {#each filteredPostTable as post}
@@ -49,6 +57,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding-top: 10px;
   }
 
   .post {

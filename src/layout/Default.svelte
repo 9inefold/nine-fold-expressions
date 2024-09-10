@@ -4,16 +4,17 @@
   import Post from '$components/Post.svelte'
   import type { BlogPost } from '$util/types';
   import '$styles/style.scss'
-  // import 'svelte-highlight/styles/paraiso-dark.css';
   // import 'svelte-highlight/styles/srcery.css';
-  import 'svelte-highlight/styles/pojoaque.css';
+  import pdark from 'svelte-highlight/styles/paraiso-dark';
+  // import pojoaque from 'svelte-highlight/styles/pojoaque';
+
   export let post: BlogPost | undefined;
 </script>
 
 <div class="my-layout">
   <Header />
 {#if post}
-  <Post post={post}>
+  <Post post={post} codeStyle={pdark}>
     <slot />
   </Post>
 {/if}

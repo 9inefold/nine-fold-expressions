@@ -1,0 +1,15 @@
+@use 'sass:color';
+@import '$styles/variables';
+
+code {
+  background-color: color.mix(lightgray, $clear, 70%);
+  border-radius: 3px;
+}
+
+a {
+  color: goldenrod;
+  &:link, &:active, &:visited {
+    color: goldenrod;
+    text-decoration: none;
+  }
+}

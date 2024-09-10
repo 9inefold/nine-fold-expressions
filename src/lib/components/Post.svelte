@@ -4,8 +4,13 @@
   import dateformat from 'dateformat';
   import Jittery from '$components/basic/Jittery.svelte';
 
+  import pdark from 'svelte-highlight/styles/paraiso-dark';
+  import '$styles/code.scss'
+
   export let post: BlogPost;
   export let hoverJitter: boolean = true;
+  export let codeStyle: string = pdark;
+  $: coverImage = getCoverImage();
 
   function formatDate(date: string) {
     return dateformat(date, "UTC:mmmm dd, yyyy");
@@ -21,6 +26,15 @@
     }
     return kw;
   }
+
+  function getCoverImage(): string | undefined {
+    if (post?.cover) {
+      return post.cover;
+    } else if (post?.image) {
+      return post.image;
+    }
+    return undefined;
+  }
 </script>
 
 <svelte:head>
@@ -33,9 +47,9 @@
     <meta name="twitter:description" content={post.excerpt} />
   {/if}
 
-  {#if post.image}
-    <meta property="og:image"  content="{url}{post.image}" />
-    <meta name="twitter:image" content="{url}{post.image}" />
+  {#if coverImage}
+    <meta property="og:image"  content="{url}{coverImage}" />
+    <meta name="twitter:image" content="{url}{coverImage}" />
   {/if}
 
   <link rel="canonical" href="{url}/{post.slug}" />
@@ -43,16 +57,22 @@
   <title>{post.title} - {title}</title>
   <meta property="og:title"  content="{post.title} - {title}" />
 	<meta name="twitter:title" content="{post.title} - {title}" />
+
+  {@html codeStyle}
 </svelte:head>
 
 <article>
 <main>
   <h1><Jittery text="{post.title}" onhover={hoverJitter} /></h1>
   <p>Published on: {formatDate(post.date)}</p>
+
   {#if post.updated}
     <p>Updated on: {formatDate(post.updated)}</p>
   {/if}
-  <p>Tags: {post.tags?.join(', ')}</p>
+  {#if post.tags}
+    <p>Tags: {post.tags.join(', ')}</p>
+  {/if}
+
   <p class="text">
     <slot />
   </p>
