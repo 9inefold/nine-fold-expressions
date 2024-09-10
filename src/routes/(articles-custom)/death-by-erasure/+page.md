@@ -747,8 +747,8 @@ These may be wrapped via ``Reflection.MethodInfo.CreateDelegate`` in the simple 
 (eg. lambda IL compilation is enabled, ``T`` is generic,
 and the function has no ``ref`` parameters),
 but is otherwise manually compiled to IL via
-[``CreateCustomUpdateDelegate``](https://github.com/dotnet/runtime/blob/51cf785/src/libraries/System.Linq.Expressions/src/System/Runtime/CompilerServices/CallSite.cs#L360) and
-[``CreateCustomNoMatchDelegate``](https://github.com/dotnet/runtime/blob/51cf785/src/libraries/System.Linq.Expressions/src/System/Runtime/CompilerServices/CallSite.cs#L669).
+[``CreateCustomUpdateDelegate``](https://github.com/dotnet/runtime/blob/43f22c651184fe63935f5e509ab060d099d55f9d/src/libraries/System.Linq.Expressions/src/System/Runtime/CompilerServices/CallSite.cs#L360) and
+[``CreateCustomNoMatchDelegate``](https://github.com/dotnet/runtime/blob/43f22c651184fe63935f5e509ab060d099d55f9d/src/libraries/System.Linq.Expressions/src/System/Runtime/CompilerServices/CallSite.cs#L669).
 
 Once the delegates have been created,
 I wrap them using the pseudofunction ``@bind``,
