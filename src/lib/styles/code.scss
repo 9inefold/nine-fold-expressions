@@ -6,6 +6,12 @@ code {
   border-radius: 3px;
 }
 
+@media (width <= 900px) {
+  .langtag::after {
+    visibility: hidden;
+  }
+}
+
 a {
   color: goldenrod;
   &:link, &:active, &:visited {
