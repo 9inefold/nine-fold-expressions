@@ -23,6 +23,8 @@ tags:
   href="@images/clothesline.gif"
   light="rgba(0,0,0,0)"
   dark="rgba(0,0,0,0)"
+  opacity={10}
+  slideSpeed={{x:17, y:20}}
 />
 
 ## Overview

@@ -3,6 +3,7 @@
   type Pos = { x: number; y:number; };
 
   export let href  = `/images/space-bg.gif`;
+  export let opacity = 100;
   export let position = "top left";
   export let invert = false;
   export let slide = true;
@@ -15,7 +16,8 @@
   $: cssurl = makeCssUrl(href);
   $: style = `
   filter:
-    invert(${invert ? 100 : 0}%);
+    invert(${invert ? 100 : 0}%)
+    opacity(${opacity}%);
   background:
     repeating-radial-gradient(
       circle at ${position},
