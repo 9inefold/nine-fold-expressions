@@ -4,6 +4,11 @@
 code {
   background-color: color.mix(lightgray, $clear, 70%);
   border-radius: 3px;
+  font-size: inherit;
+}
+
+.langtag {
+  font-size: inherit;
 }
 
 @media (width <= 900px) {

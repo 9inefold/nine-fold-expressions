@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { debug } from '$lib/config'
   import Highlight, { LineNumbers } from 'svelte-highlight';
   import {
     c, cpp, csharp, haskell,
@@ -10,7 +11,7 @@
     'java' | 'llvm' | 'rs' | 'ts' | 'x86';
 	export let lang: LangName = 'cpp';
   export let langtag: boolean = true;
-  // export let showlines: boolean = true;
+  export let showlines: boolean = false;
 
   const langMatch = (lang: LangName) => {
     switch (lang) {
@@ -27,22 +28,44 @@
   }
 
   let data: HTMLSpanElement;
+  // let code: string;
+  //$: code = '';
 
-  $: langv = langMatch(lang);
-  $: text = (data?.innerText) ?? '';
+  /** @type {import('svelte/action').Action<HTMLSpanElement>}  */
+  function extract(node: HTMLSpanElement) {
+    code = (node?.innerText) ?? 'foo';
+    if (debug && node?.innerText?.length) {
+      console.log(code);
+    }
+    return {
+			destroy() {
+        // ...
+      }
+		};
+  }
+
+  $: language = langMatch(lang);
+  $: code = (data?.innerText) ?? '';
+/**
+<span class="code-capture" bind:this={data}>
+  <slot />
+</span>
+*/
 </script>
 
-<span id="capture" bind:this={data}>
+<span class="code-capture" bind:this={data}>
   <slot />
 </span>
 
-<Highlight language={langv} code={text} langtag={langtag} />
+{#if false && showlines}
+<Highlight {code} {language} {langtag} let:highlighted>
+  <LineNumbers {highlighted} />
+</Highlight>
+{:else}
+<Highlight {code} {language} {langtag} />
+{/if}
 
 <style lang="scss">
-  #capture {
-    display: none;
-  }
-
 	:global(pre) {
     background-color: var(--background-950);
     padding: 1px;

@@ -3,7 +3,8 @@
   import Footer from '$components/Footer.svelte'
   import Post from '$components/Post.svelte'
   import type { BlogPost } from '$util/types';
-  import '$styles/style.scss'
+  import '$styles/style.scss';
+  import '$styles/hl/paraiso-dark.css';
   // import 'svelte-highlight/styles/srcery.css';
   import pdark from 'svelte-highlight/styles/paraiso-dark';
   // import pojoaque from 'svelte-highlight/styles/pojoaque';

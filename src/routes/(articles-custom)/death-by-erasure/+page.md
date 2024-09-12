@@ -1,6 +1,7 @@
 ---
 title: Death by Type Erasure
-date:  2024-09-10
+date: 2024-09-10
+updated: 2024-09-11
 hidden: false
 excerpt: Join me as I rant about generics and take a peek behind the curtains.
 component: default
@@ -32,6 +33,8 @@ tags:
 - [Overview](#overview)
 - [Intro](#intro)
 - [Background](#background)
+  - [Volatile in C/C++](#volatile-in-cc)
+  - [Volatile in C#](#volatile-in-c)
 - [Fiddly generics](#fiddly-generics)
 - [Death by erasure](#death-by-erasure)
   - [Heterogeneous generics](#heterogeneous-generics)
@@ -58,70 +61,123 @@ Now, I knew going in that C# was similar to Java, but being part of the
 It started with me prodding variable lifetimes in the GC.
 I had a function like so:
 
-<CodeBlock lang="cs">
-
 ```cs
 private static void Tester(string name) {
-  Finalizer obj = new() { ... };
+  Finalizer obj = new() { .\.\. };
 }
 ```
 
-</CodeBlock>
-
 Which I was using to test when exactly a finalizer would get called:
-
-<CodeBlock lang="cs">
 
 ```cs
 public class Finalizer {
   public static bool Wait = true;
-  ...
+  .\.\.
   ~Finalizer() {
-    ...
+    .\.\.
     Wait = false;
   }
 }
 ```
 
-</CodeBlock>
-
 But then I wanted to add settings I could toggle via the command line while
-still running a loop. That led to me adding a ``Task`` for non-blocking console input.
+still running a loop. That led to me adding a ``Task``
+for non-blocking (asynchronous) console input.
 
 The issue came about while making sure the compiler wouldn't optimize out my loop
 condition checks. So I went with the dreaded ``volatile``...
 
 ...and was pleasantly surprised, no tactical UB required!
+The purpose of ``volatile`` often confuses people, so let me quickly explain it.
+
+### Volatile in C/C++
+
+In C/C++ ``volatile`` is specifically for things like memory-mapped IO.
+
+For example, let's say I'm interfacing with an LED,
+and it has a serial port bound to the address ``ADDR``.
+Every time a value is written, it sends a signal to the device to flash a color for a second.
+
+Let's say we've told the compiler to put the variable ``g_port`` at ``ADDR``.
+We can then try interface with it from C:
+
+```c
+// In assembly we say this value is at ADDR.
+extern int g_port;
+
+enum LEDColors {
+  RED   = 1,
+  BLUE  = 2,
+  ...
+};
+
+void flash_thrice(void) {
+  // Each write queues up a flash.
+  g_port = RED;
+  g_port = BLUE;
+  g_port = RED;
+}
+```
+
+The issue is, from the compiler's view the first two writes in ``flash_thrice`` can
+be removed, as they have no visible *side effects* (or changes to the program's state).
+This means the incorrect code is generated and the LED only flashes once:
+
+<CodeBlock lang="x86">
+
+```x86asm
+flash_thrice:
+  ; First 2 writes removed by the compiler
+  mov dword ptr [g_port], 1
+  ret
+```
+
+</CodeBlock>
+
+But if we make ``g_port`` ``volatile``, the compiler has to assume these writes
+have side effects ([C11 §5.1.2.3.2](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf#page=32)),
+and generates the correct code:
+
+<CodeBlock lang="x86">
+
+```x86asm
+flash_thrice:
+  mov dword ptr [g_port], 1
+  mov dword ptr [g_port], 2
+  mov dword ptr [g_port], 1
+  ret
+```
+
+</CodeBlock>
+
+And now our LED flashes correctly!
+For more detail, read [this article](https://bajamircea.github.io/coding/cpp/2019/11/05/cpp11-volatile.html).
+
+### Volatile in C\#
+
 Unlike C++ where ``volatile`` just restricts certain load/store optimizations
 without saying [anything specific](https://eel.is/c++draft/dcl.type.cv#6),
 C# ``volatile`` is required to be [acquire/release](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/classes#1554-volatile-fields).
 
 A nice choice for sure, as it helps avoid *some* of the issues that trip up a lot of C++ beginners
-(important to note it's still not magical, read more [here](https://ericlippert.com/2011/06/16/atomicity-volatility-and-immutability-are-different-part-three/)).
+(though it's important to note C# ``volatile`` is still not magical,
+read more [here](https://ericlippert.com/2011/06/16/atomicity-volatility-and-immutability-are-different-part-three/)).
 
 So... easy fix?
-
-<CodeBlock lang="cs">
 
 ```cs
 public class Finalizer {
   public static volatile bool Wait = true;
-  ...
+  .\.\.
 }
 ```
-
-</CodeBlock>
 
 Well... yeah. But that led to my first false assumption,
 which I immediately noticed when trying to make a local variable:
 
-<CodeBlock lang="cs" langtag={false}>
-
 ```cs
 volatile bool runInLoop = false; // Error CS0106
 ```
-
-</CodeBlock>
 
 Just because ``volatile`` can be applied *here* doesn't mean it can *everywhere*.
 
@@ -136,8 +192,6 @@ As you can tell by the section header, not very well.
 
 My "genius" idea was to implement a volatile wrapper, the first attempt being:
 
-<CodeBlock lang="cs">
-
 ```cs
 namespace Evil;
 
@@ -145,8 +199,6 @@ public struct Volatile<T> {
   public volatile T Value; // Error CS0677
 }
 ```
-
-</CodeBlock>
 
 This doesn't work for reasons that will become obvious to me [later](#death-by-erasure).
 But at the time I decided to just ignore it and power through.
@@ -160,8 +212,6 @@ Looking at the allowed uses, you can declare the following ``volatile``:
 Ok, so instead of doing things directly in ``Volatile``, lets make it an interface
 and use a factory to create specific instances:
 
-<CodeBlock lang="cs">
-
 ```cs
 namespace Evil;
 
@@ -173,18 +223,14 @@ public interface Volatile<T> {
 public static class VolatileFactory;
 
 public class VolatileRef<T> : Volatile<T> where T: class {
-  ...
+  .\.\.
   private volatile T Value;
 }
 ```
 
-</CodeBlock>
-
 Hmmm... well there's a lot of types to write this code for.
 Instead of doing it by hand, let's write a little code generator.
 We'll make it take a ``(NAME, TYPE)`` tuple and output:
-
-<CodeBlock lang="cs">
 
 ```cs
 public class VolatileNAME : Volatile<TYPE> {
@@ -196,13 +242,9 @@ public class VolatileNAME : Volatile<TYPE> {
 }
 ```
 
-</CodeBlock>
-
 Now we have all the value types implemented, we just have to generate the factory methods.
 I decided to go with a C++ style type wrapper dispatch method,
 because surely that works in any language with overloading!
-
-<CodeBlock lang="cs">
 
 ```cs
 public struct TypeRef<T> { }
@@ -231,8 +273,6 @@ public static partial class VolatileFactory {
   }
 }
 ```
-
-</CodeBlock>
 
 But to my dismay, it did not.
 Instead I got ``cannot convert from 'Evil.TypeRef<T>' to 'char'``! Why?
@@ -273,8 +313,6 @@ and seeing what happens under the hood.
 C++ uses heterogenous generics, which means every instantiation of a template is unique.
 Translating our example, we get:
 
-<CodeBlock lang="cpp">
-
 ```cpp
 using String = std::string;
 
@@ -286,11 +324,7 @@ template <typename T> struct X {
 };
 ```
 
-</CodeBlock>
-
 When I create our classes, the compiler generates something like:
-
-<CodeBlock lang="cpp">
 
 ```cpp
 struct X<int> {
@@ -308,8 +342,6 @@ struct X<String> {
 };
 ```
 
-</CodeBlock>
-
 And this the reason you can do specialization.
 
 But it also means the template doesn't actually exist in the binary.
@@ -318,8 +350,6 @@ but there's no (standard) way to precompile them generically.
 
 All you can do is:
 
-<CodeBlock lang="cpp">
-
 ```cpp
 // In MyType.hpp
 extern template struct X<MyType>;
@@ -327,16 +357,12 @@ extern template struct X<MyType>;
 template struct X<MyType>;
 ```
 
-</CodeBlock>
-
 Which tells the compiler the instance already exists.
 
 ### Homogenous generics
 
 Java is almost the exact opposite; with homogeneous generics, every instance is the same.
 Translating our example, we get:
-
-<CodeBlock lang="java">
 
 ```java
 class X<T> {
@@ -347,13 +373,9 @@ class X<T> {
 }
 ```
 
-</CodeBlock>
-
 And no matter what classes I instance
 (though it should be noted ``int`` cannot be used directly as it is primitive,
 you have to box it via ``Integer``), the compiler generates:
-
-<CodeBlock lang="java">
 
 ```java
 class X {
@@ -364,8 +386,6 @@ class X {
 }
 ```
 
-</CodeBlock>
-
 This was done to allow the (at the time) newly-implemented generics to still work
 with the old ``.class`` files (thanks ABI!).
 
@@ -375,16 +395,12 @@ at the cost of performance and safety.
 
 For example, a major footgun is:
 
-<CodeBlock lang="java">
-
 ```java
 X<String> x = new X<>();
 X raw = x;      // Now untyped
 raw.value = 55;
 String s = x.value;
 ```
-
-</CodeBlock>
 
 Which gives us a beautiful [ClassCastException](https://godbolt.org/z/cbonbz4M5).
 
@@ -406,8 +422,6 @@ as well as the use of static objects/methods.
 
 Let's skip straight to instantiating our objects:
 
-<CodeBlock lang="cs">
-
 ```csharp
 struct X`1<T> {
   public !T value;
@@ -417,8 +431,6 @@ struct X`1<T> {
   }
 }
 ```
-
-</CodeBlock>
 
 The `` `1`` is important. It corresponds to the arity of a class,
 allowing you to "overload" generics in the same namespace.
@@ -431,8 +443,6 @@ This is the actual representation of ``X`` in the binary,
 the specialization will not exist until the program first runs.
 If we run the program, we may get something like this
 (though less annotated than real objects):
-
-<CodeBlock lang="cs">
 
 ```csharp
 using System;
@@ -451,8 +461,6 @@ struct X`1[__Canon] {
   }
 }
 ```
-
-</CodeBlock>
 
 What? Where did this ``__Canon`` type come from?
 
@@ -485,8 +493,6 @@ which, like ``@specialized``, increases the binary size.
 
 Let's go on a quick tangent, starting by defining a new generic, ``Y``:
 
-<CodeBlock lang="cs">
-
 ```csharp
 class Y<T> {
   public required T Value { get; set; }
@@ -495,11 +501,7 @@ class Y<T> {
 }
 ```
 
-</CodeBlock>
-
 This will be desugared into something like:
-
-<CodeBlock lang="cs">
 
 ```csharp
 class Y<T> {
@@ -521,12 +523,8 @@ class Y<T> {
 }
 ```
 
-</CodeBlock>
-
 Assuming value types are equivalent to fundamental/trivial types,
 the rough C++ translation is something like so:
-
-<CodeBlock lang="cpp">
 
 ```cpp
 struct Y$ {
@@ -562,11 +560,7 @@ public:
 };
 ```
 
-</CodeBlock>
-
 For some example usage, let's convert the following:
-
-<CodeBlock lang="cs">
 
 ```csharp
 Y<int> i = new() { Value = 55 };
@@ -580,11 +574,7 @@ if (Y<int>.Inc() == 1) {
 }
 ```
 
-</CodeBlock>
-
 Which leaves us with:
-
-<CodeBlock lang="cpp">
 
 ```cpp
 Y<int>* i = New();
@@ -601,8 +591,6 @@ if (i->Inc() == 1) {
     << ", " << s->Value() << '\n';
 }
 ```
-
-</CodeBlock>
 
 And of course, it's more complicated than this,
 and I left [some parts out](https://godbolt.org/z/Ex7x8PvKn),
@@ -636,8 +624,6 @@ which allows you to move certain checks from compile time to runtime.
 
 By changing my code from earlier to:
 
-<CodeBlock lang="cs">
-
 ```csharp
 // For each (NAME, TYPE):
 public static partial class VolatileFactory {
@@ -656,8 +642,6 @@ public static partial class VolatileFactory {
 }
 ```
 
-</CodeBlock>
-
 I get exactly the result I was looking for.
 It actually selects the specific overloads instead of just defaulting to
 the generic one.
@@ -665,8 +649,6 @@ the generic one.
 But how does this actually work?
 
 Well, here's the desugared code (with some not-so-legal tweaks for readability):
-
-<CodeBlock lang="cs">
 
 ```csharp
 using Microsoft.CSharp.RuntimeBinder;
@@ -721,8 +703,6 @@ public static partial class VolatileFactory {
 }
 ```
 
-</CodeBlock>
-
 But what does this all do?
 
 First, we have to initialize the ``CallSite`` delegates;
@@ -754,8 +734,6 @@ Once the delegates have been created,
 I wrap them using the pseudofunction ``@bind``,
 which would look something like this:
 
-<CodeBlock lang="rs">
-
 ```rust
 macro_rules! bind {
   ($obj:ident, $func:ident) => {
@@ -763,8 +741,6 @@ macro_rules! bind {
   }
 }
 ```
-
-</CodeBlock>
 
 We can then finally invoke ``Disp.Target``
 with the current context, and unbox the result with ``Conv.Target``.

@@ -1,10 +1,11 @@
 <script lang="ts">
   import type { BlogPost } from '$util/types';
-  import { title, url, blogUrl, keywords } from '$lib/config'
+  import { title, url, blogUrl, keywords, debug } from '$lib/config'
   import dateformat from 'dateformat';
   import Jittery from '$components/basic/Jittery.svelte';
 
   import pdark from 'svelte-highlight/styles/paraiso-dark';
+  // import pojoaque from '$styles/pojoaque';
   import '$styles/code.scss'
 
   export let post: BlogPost;
@@ -64,11 +65,13 @@
 <article>
 <main>
   <h1><Jittery text="{post.title}" onhover={hoverJitter} /></h1>
-  <p>Published on: {formatDate(post.date)}</p>
-
-  {#if post.updated}
-    <p>Updated on: {formatDate(post.updated)}</p>
-  {/if}
+  <p>
+    Published on: {formatDate(post.date)}
+    {#if post.updated}
+      <br>
+      <em>Updated on: {formatDate(post.updated)}</em>
+    {/if}
+  </p>
   {#if post.tags}
     <p>Tags: {post.tags.join(', ')}</p>
   {/if}

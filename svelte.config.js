@@ -1,11 +1,14 @@
 import adapter from '@sveltejs/adapter-static';
-import { vitePreprocess } from '@sveltejs/kit/vite';
+// import { vitePreprocess } from '@sveltejs/kit/vite';
 import { sveltePreprocess } from 'svelte-preprocess';
 import { mdsvex } from 'mdsvex';
+
+import remarkCodeExtra from 'remark-code-extra';
 
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeExternalLinks from 'rehype-external-links';
 import rehypeSlug from 'rehype-slug';
+import { properties } from 'svelte-highlight/languages';
 
 const md_extensions = [".md", ".svelte.md", ".svx"];
 const base_path = (process.env.NODE_ENV === 'production') ? '/eight-fold-expressions' : '';
@@ -48,6 +51,12 @@ const config = {
 		}),
 		mdsvex({
 			extensions: [...md_extensions],
+			highlight: {
+				alias: {
+					x86asm:	'nasm',
+					x86: 		'nasm',
+				},
+			},
 			rehypePlugins: [
 				rehypeExternalLinks,
 				rehypeSlug,
@@ -57,7 +66,8 @@ const config = {
 						behavior: 'wrap',
 						properties: { className: ['heading-link'], title: 'Permalink' },
 					}
-				]
+				],
+				// TODO: remarkModCode (lang tag)
 			]
 		})
 	],

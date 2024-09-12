@@ -4,6 +4,7 @@
   import GradientBg from '$components/GradientBg.svelte'
   import DefaultLayout from '$components/DefaultLayout.svelte'
   import '$styles/style.scss'
+  import '$styles/hl/pojoaque.css';
 
   export let data: { post: BlogPost };
 	$: ({ post } = data);
