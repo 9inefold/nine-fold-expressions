@@ -15,7 +15,7 @@ tags:
 <!-- markdownlint-disable MD033 -->
 
 <script>
-  import CodeBlock from '$components/basic/CodeBlock.svelte'
+  // import CodeBlock from '$components/basic/CodeBlock.svelte'
   import Image from '$components/basic/Image.svelte'
   import GradientBg from '$components/GradientBg.svelte';
 </script>
@@ -123,8 +123,6 @@ The issue is, from the compiler's view the first two writes in ``flash_thrice`` 
 be removed, as they have no visible *side effects* (or changes to the program's state).
 This means the incorrect code is generated and the LED only flashes once:
 
-<CodeBlock lang="x86">
-
 ```x86asm
 flash_thrice:
   ; First 2 writes removed by the compiler
@@ -132,13 +130,9 @@ flash_thrice:
   ret
 ```
 
-</CodeBlock>
-
 But if we make ``g_port`` ``volatile``, the compiler has to assume these writes
 have side effects ([C11 §5.1.2.3.2](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf#page=32)),
 and generates the correct code:
-
-<CodeBlock lang="x86">
 
 ```x86asm
 flash_thrice:
@@ -147,8 +141,6 @@ flash_thrice:
   mov dword ptr [g_port], 1
   ret
 ```
-
-</CodeBlock>
 
 And now our LED flashes correctly!
 For more detail, read [this article](https://bajamircea.github.io/coding/cpp/2019/11/05/cpp11-volatile.html).
@@ -291,8 +283,6 @@ but I'm gonna overexplain it because this is **my** blog dammit!
 
 Lets first make a "cross-language" example:
 
-<CodeBlock lang="rs" langtag={false}>
-
 ```rs
 generic <T> struct X {
   pub value: T;
@@ -301,8 +291,6 @@ generic <T> struct X {
   }
 }
 ```
-
-</CodeBlock>
 
 There are two main languages on each end of the spectrum: C++ and Java.
 We will be creating ``X<int>`` and ``X<String>`` for both,
