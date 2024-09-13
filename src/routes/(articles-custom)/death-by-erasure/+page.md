@@ -1,7 +1,7 @@
 ---
 title: Death by Type Erasure
 date: 2024-09-10
-updated: 2024-09-11
+updated: 2024-09-13
 hidden: false
 excerpt: Join me as I rant about generics and take a peek behind the curtains.
 component: default
