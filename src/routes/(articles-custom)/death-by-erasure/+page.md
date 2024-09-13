@@ -15,7 +15,6 @@ tags:
 <!-- markdownlint-disable MD033 -->
 
 <script>
-  // import CodeBlock from '$components/basic/CodeBlock.svelte'
   import Image from '$components/basic/Image.svelte'
   import GradientBg from '$components/GradientBg.svelte';
 </script>
@@ -123,7 +122,7 @@ The issue is, from the compiler's view the first two writes in ``flash_thrice`` 
 be removed, as they have no visible *side effects* (or changes to the program's state).
 This means the incorrect code is generated and the LED only flashes once:
 
-```x86asm
+```nasm
 flash_thrice:
   ; First 2 writes removed by the compiler
   mov dword ptr [g_port], 1
@@ -192,7 +191,7 @@ public struct Volatile<T> {
 }
 ```
 
-This doesn't work for reasons that will become obvious to me [later](#death-by-erasure).
+This doesn't work for reasons that would become obvious to me [later](#death-by-erasure).
 But at the time I decided to just ignore it and power through.
 
 Looking at the allowed uses, you can declare the following ``volatile``:
@@ -251,7 +250,7 @@ public static partial class VolatileFactory {
   }
 }
 
-...
+.\.\.
 
 // And then:
 public static partial class VolatileFactory {
@@ -283,7 +282,8 @@ but I'm gonna overexplain it because this is **my** blog dammit!
 
 Lets first make a "cross-language" example:
 
-```rs
+<!-- modcode NOLANG --->
+```rust
 generic <T> struct X {
   pub value: T;
   pub fn cmp(T in) -> bool {
@@ -362,7 +362,7 @@ class X<T> {
 ```
 
 And no matter what classes I instance
-(though it should be noted ``int`` cannot be used directly as it is primitive,
+(though it should be noted ``int`` cannot be used directly as it is a primitive type,
 you have to box it via ``Integer``), the compiler generates:
 
 ```java
@@ -377,7 +377,7 @@ class X {
 This was done to allow the (at the time) newly-implemented generics to still work
 with the old ``.class`` files (thanks ABI!).
 
-One of the benefits of homogeneous generics they can be compiled once and used
+One of the benefits of homogeneous generics is that they can be compiled once and used
 the same way for everything. This can dramatically speed up compile times
 at the cost of performance and safety.
 
@@ -596,7 +596,8 @@ if a specific instantiation is valid.
 Instead, it acts in a similar way to Java wildcards,
 ensuring *all* types are valid for a generic instantiation.
 
-Even though directly passing a ``TypeRef<>`` from a non-generic context would work,
+Even though directly passing a ``TypeRef<>`` from a
+non-generic context *would* call the overloads,
 because the function has to define a single CIL signature,
 it doesn't in our generic case.
 
@@ -722,6 +723,7 @@ Once the delegates have been created,
 I wrap them using the pseudofunction ``@bind``,
 which would look something like this:
 
+<!-- modcode NOLANG -->
 ```rust
 macro_rules! bind {
   ($obj:ident, $func:ident) => {

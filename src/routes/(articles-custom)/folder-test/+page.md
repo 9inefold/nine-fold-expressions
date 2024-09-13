@@ -13,7 +13,6 @@ tags:
 <!-- markdownlint-disable MD033 -->
 
 <script>
-  import CodeBlock from '$components/basic/CodeBlock.svelte'
   import Image from '$components/basic/Image.svelte'
   import GradientBg from '$components/GradientBg.svelte';
 </script>

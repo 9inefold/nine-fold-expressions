@@ -3,10 +3,13 @@
   import Footer from '$components/Footer.svelte'
   import Post from '$components/Post.svelte'
   import type { BlogPost } from '$util/types';
+  
   import '$styles/style.scss';
   import '$styles/hl/paraiso-dark.css';
+  import '$styles/code.scss';
+
   // import 'svelte-highlight/styles/srcery.css';
-  import pdark from 'svelte-highlight/styles/paraiso-dark';
+  // import pdark from 'svelte-highlight/styles/paraiso-dark';
   // import pojoaque from 'svelte-highlight/styles/pojoaque';
 
   export let post: BlogPost | undefined;
@@ -15,7 +18,7 @@
 <div class="my-layout">
   <Header />
 {#if post}
-  <Post post={post} codeStyle={pdark}>
+  <Post post={post}>
     <slot />
   </Post>
 {/if}

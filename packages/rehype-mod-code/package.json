@@ -1,0 +1,19 @@
+{
+  "name": "@plugin/rehype-mod-code",
+  "version": "0.0.1",
+  "description": "Modify code blocks via rehype",
+  "main": "./src/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc --build --clean && tsc --build",
+    "prepack": "npm run build"
+  },
+  "devDependencies": {
+    "dom-serializer": "^2.0.0",
+    "domhandler": "^5.0.3",
+    "htmlparser2": "^9.1.0",
+    "typescript": "^5.0.0",
+    "unified": "^11.0.5",
+    "unist-util-visit": "^5.0.0"
+  }
+}

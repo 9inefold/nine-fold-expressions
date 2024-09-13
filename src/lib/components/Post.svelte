@@ -4,13 +4,13 @@
   import dateformat from 'dateformat';
   import Jittery from '$components/basic/Jittery.svelte';
 
-  import pdark from 'svelte-highlight/styles/paraiso-dark';
+  // import pdark from 'svelte-highlight/styles/paraiso-dark';
   // import pojoaque from '$styles/pojoaque';
   import '$styles/code.scss'
 
   export let post: BlogPost;
   export let hoverJitter: boolean = true;
-  export let codeStyle: string = pdark;
+  // export let codeStyle: string = pdark;
   $: coverImage = getCoverImage();
 
   function formatDate(date: string) {
@@ -59,7 +59,7 @@
   <meta property="og:title"  content="{post.title} - {title}" />
 	<meta name="twitter:title" content="{post.title} - {title}" />
 
-  {@html codeStyle}
+  <!-- {@html codeStyle} -->
 </svelte:head>
 
 <article>
