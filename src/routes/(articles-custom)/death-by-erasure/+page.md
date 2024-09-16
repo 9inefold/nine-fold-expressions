@@ -288,6 +288,10 @@ but I'm gonna overexplain it because this is **my** blog dammit!
 Lets first make a "cross-language" example:
 
 <!-- modcode NOLANG --->
+<!-- 
+modcode map
+generic token keyword;
+-->
 ```rust
 generic <T> struct X {
   pub value: T;
@@ -306,6 +310,10 @@ and seeing what happens under the hood.
 C++ uses heterogenous generics, which means every instantiation of a template is unique.
 Translating our example, we get:
 
+<!-- 
+modcode map
+String token keyword;
+-->
 ```cpp
 using String = std::string;
 
@@ -319,6 +327,10 @@ template <typename T> struct X {
 
 When I create our classes, the compiler generates something like:
 
+<!-- 
+modcode map
+String token keyword;
+-->
 ```cpp
 struct X<int> {
   int value;
