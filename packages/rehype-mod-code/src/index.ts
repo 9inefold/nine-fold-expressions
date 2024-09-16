@@ -5,6 +5,7 @@ import { visit } from 'unist-util-visit';
 import { ElementType, Parser } from 'htmlparser2';
 import { DomHandler } from 'domhandler';
 import type * as DOM from 'domhandler';
+import * as DOMUtil from 'domhandler';
 import render from 'dom-serializer';
 
 const internalDebug = false;
@@ -42,24 +43,10 @@ export type RehypeCodeOptions = {
   tagDefault?: boolean,
 };
 
-class TmpBool {
-  _value: boolean | null;
-  _default: boolean;
-
-  constructor(value?: boolean, defaultValue?: boolean) {
-    this._default = defaultValue ?? false;
-    this._value = value ?? this._default;
-  }
-
-  get value(): boolean {
-    const out = !!this._value;
-    this._value ??= this._default;
-    return out;
-  }
-  set value(value: boolean | null) {
-    this._value = value;
-  }
-}
+type InternalState = {
+  showTag: boolean,
+  tokMap: StrMap<string>,
+};
 
 const inNode = typeof window === 'undefined';
 const inBrowser = !inNode;
@@ -119,7 +106,7 @@ const langMap: StrMap<string> = {
 
 function escapeString(str: string): string {
   return str
-  .replace(/\n/g, " ")
+  .replace(/\n/g, "\\n")
   .replace(/\t/g, "  ")
   .replace(/[\b]/g, "\\b")
   .replace(/\r/g, "\\r")
@@ -140,6 +127,10 @@ function logDebug(message?: any, ...optionalParams: any[]) {
   }
 }
 
+function logWarning(text?: string) {
+  if (warn) logANSI(text, ANSI.BrightYellow);
+}
+
 function logANSI(text?: string, color?: ANSIType) {
   if (!debug) {
     return;
@@ -155,9 +146,9 @@ function logANSI(text?: string, color?: ANSIType) {
 }
 
 function dumpPre(pre: DOM.Element) {
-  if (pre.name !== 'pre') return;
+  // if (pre.name !== 'pre') return;
   if (pre.children.length < 1) return;
-  logANSI(`pre > ${JSON.stringify(pre.attribs)}`, ANSI.Magenta);
+  logANSI(`${pre.name} > ${JSON.stringify(pre.attribs)}`, ANSI.Magenta);
   for (let child of pre.children) {
     try {
       const str = JSON.stringify(child);
@@ -165,7 +156,7 @@ function dumpPre(pre: DOM.Element) {
     } catch {
       if (child.type !== ElementType.Tag) {
         if (child.type === ElementType.Text) {
-          logANSI(`  > '${child.data}'`, ANSI.Green);
+          logANSI(`  > '${escapeString(child.data)}'`, ANSI.Green);
         } else {
           logANSI(`  > ${child.type}`, ANSI.BrightGreen);
         }
@@ -180,6 +171,13 @@ function dumpPre(pre: DOM.Element) {
 
 ////////////////////////////////////////////////////////////////////////
 
+function defaultState(show?: boolean): InternalState {
+  return {
+    showTag: show ?? true, 
+    tokMap: {}
+  };
+}
+
 function extractComment(comment: string): Nullish<string> {
   const matches = comment.match(/^<!---*\s*(.*?)\s*-*-->$/ms);
   return matches?.at(1);
@@ -190,9 +188,7 @@ function extractCommandFromComment(comment: string): string[] {
   if (!parsed || parsed.length < 1) {
     return [];
   }
-  return parsed
-    .split(/[\s\n]+/)
-    .map(cmd => cmd.toLowerCase());
+  return parsed.split(/[\s\n]+/);
 }
 
 function extractPreNode(dom: DOM.ChildNode[]): Nullish<DOM.Element> {
@@ -234,7 +230,56 @@ function renderSvelteDOM(dom: DOM.ChildNode[]): string {
   return render(dom, { encodeEntities: false });
 }
 
-function modifyHTML(dom: DOM.ChildNode[], extraLangs?: StrMap<string>): Nullish<string> {
+function mapKeys(code: DOM.Element, state: InternalState) {
+  if (code.name !== 'code') return;
+  let { children } = code;
+  const { tokMap } = state;
+  type NestedNodes = DOM.ChildNode | DOM.ChildNode[];
+  let mutated: NestedNodes[] = children.map((child) => {
+    if (!DOMUtil.isText(child)) {
+      return child;
+    }
+
+    const tokens = child.data
+      .split(/(?:(?<=[^\w$@])(?=[\w$@]))|(?:(?<=[\w$@])(?=[^\w$@]))/gms);
+    let strBuilder = '';
+    let newChildren: DOM.ChildNode[] = [];
+
+    function appendBuiltStr() {
+      if (strBuilder.length) {
+        newChildren.push(new DOMUtil.Text(strBuilder));
+        strBuilder = '';
+      }
+    }
+
+    for (let tok of tokens) {
+      if (!(tok in tokMap)) {
+        strBuilder += tok;
+        continue;
+      }
+      appendBuiltStr();
+      newChildren.push(new DOMUtil.Element(
+        'span', { 'class': tokMap[tok] },
+        [new DOMUtil.Text(tok)], ElementType.Tag
+      ));
+    }
+
+    if (newChildren.length < 1) {
+      return child;
+    }
+
+    appendBuiltStr();
+    return newChildren;
+  });
+
+  code.children = mutated.flat();
+}
+
+function modifyHTML(
+  dom: DOM.ChildNode[], 
+  state: InternalState, 
+  extraLangs?: StrMap<string>
+): Nullish<string> {
   let pre = extractPreNode(dom);
   if (!pre) return null;
   const cls = pre.attribs['class'];
@@ -243,11 +288,27 @@ function modifyHTML(dom: DOM.ChildNode[], extraLangs?: StrMap<string>): Nullish<
   let code = extractCodeNode(pre);
   if (!code) return null;
 
-  const rawLang = cls.slice('language-'.length);
-  const lang = mapLangtype(rawLang, extraLangs);
-  pre.attribs['data-language'] = lang;
-  // code.attribs['data-language'] = lang;
+  if (state.showTag) {
+    const rawLang = cls.slice('language-'.length);
+    const lang = mapLangtype(rawLang, extraLangs);
+    pre.attribs['data-language'] = lang;
+    // code.attribs['data-language'] = lang;
+  }
+  if (Object.keys(state.tokMap).length > 1) {
+    // for (let key in state.tokMap) {
+    //   logANSI(`${key}: ${state.tokMap[key]}`, ANSI.BrightBlue);
+    // }
+    // logDebug();
+    mapKeys(code, state);
+  }
   return renderSvelteDOM(dom);
+}
+
+////////////////////////////////////////////////////////////////////////
+ 
+function argsToLabelDirectives(args: string[]): string[] {
+  const reg = /([^\s;]\S*\s+(?:[^\s;]+\s*?)+)(?=;|$)/gm;
+  return [...args.join(' ').matchAll(reg)].map(m => m[1]);
 }
 
 const rehypeCodeBlocks: Plugin<[RehypeCodeOptions?], Root> = (options = {}) => {
@@ -259,17 +320,17 @@ const rehypeCodeBlocks: Plugin<[RehypeCodeOptions?], Root> = (options = {}) => {
     logDebug();
     const modcodeCommands: StrMap<CommandCallback> = {
       'nolang': cmdNoLang,
+      'map':    cmdMapTokens,
     };
-    
-    let showTag = new TmpBool(true, tagDefault);
-    let currValue = tagDefault;
+
+    let showTag = tagDefault;
+    let state = defaultState(tagDefault);
 
     visit(tree, (node, index, parent) => {
       if ((node.type as string) !== 'raw') {
         return;
       }
       
-      currValue = showTag.value;
       let rawHtml: string = (node as any)['value'];
       if (rawHtml?.length < 1) return;
 
@@ -286,11 +347,12 @@ const rehypeCodeBlocks: Plugin<[RehypeCodeOptions?], Root> = (options = {}) => {
       const parser = new Parser(handler, { decodeEntities: false });
       parser.write(rawHtml);
       parser.end();
+      state = defaultState(tagDefault);
 
       function doDOMStuff(err: Error | null, dom: DOM.ChildNode[]) {
         if (err) {
-        } else if (currValue) {
-          const newHtml = modifyHTML(dom, extraLangs);
+        } else {
+          const newHtml = modifyHTML(dom, state, extraLangs);
           if (newHtml) {
             (node as any)['value'] = newHtml;
           }
@@ -305,30 +367,49 @@ const rehypeCodeBlocks: Plugin<[RehypeCodeOptions?], Root> = (options = {}) => {
         const cmd = next();
         if (cmd in modcodeCommands) {
           modcodeCommands[cmd](fullCmd);
-        } else if (warn) {
-          logANSI(`Unknown command '${cmd}'`, ANSI.BrightYellow);
+        } else {
+          logWarning(`Unknown command '${cmd}'`);
         }
       } else if (extraHandlers && prefix in extraHandlers) {
         extraHandlers[prefix](fullCmd);
-      } else if (warn) {
-        logANSI(`Unknown command prefix '${prefix}'`, ANSI.BrightYellow);
+      } else {
+        logWarning(`Unknown command prefix '${prefix}'`);
       }
 
       function next(): string {
         const out = fullCmd[0] ?? '';
         fullCmd = fullCmd.slice(1);
-        return out;
+        return out.toLowerCase();
       }
     }
 
     function cmdNoLang(args: string[]) {
       const arg = args.at(0) ?? '';
       if (arg === 'start') {
-        showTag.value = false;
+        showTag = false;
+        state.showTag = false;
       } else if (arg === 'end') {
-        showTag.value = true;
-      } else if (!arg.length && currValue) {
-        showTag.value = null;
+        showTag = true;
+        state.showTag = true;
+      } else if (!arg.length) {
+        state.showTag = false;
+      }
+    }
+
+    function cmdMapTokens(args: string[]) {
+      if (args.length === 0) return;
+      const lbls = argsToLabelDirectives(args);
+      for (let lbl of lbls) {
+        let toReplace = lbl.match(/(\S+)\s+((?:\S+\s*)+)/)?.slice(1);
+        if (!toReplace) {
+          logWarning(`Invalid directive '${lbl}'`);
+          continue;
+        }
+        const key = toReplace[0];
+        if (key in state.tokMap) {
+          logWarning(`Overwriting key '${key}'`);
+        }
+        state.tokMap[key] = toReplace[1];
       }
     }
   };

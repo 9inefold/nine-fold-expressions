@@ -24,7 +24,7 @@ tags:
   light="rgba(0,0,0,0)"
   dark="rgba(0,0,0,0)"
   opacity={10}
-  slideSpeed={{x:17, y:20}}
+  slideSpeed={{x:17,y:20}}
 />
 
 ## Overview
@@ -100,6 +100,11 @@ Every time a value is written, it sends a signal to the device to flash a color 
 Let's say we've told the compiler to put the variable ``g_port`` at ``ADDR``.
 We can then try interface with it from C:
 
+<!-- 
+modcode map
+RED  token label;
+BLUE token label;
+-->
 ```c
 // In assembly we say this value is at ADDR.
 extern int g_port;
@@ -122,7 +127,7 @@ The issue is, from the compiler's view the first two writes in ``flash_thrice`` 
 be removed, as they have no visible *side effects* (or changes to the program's state).
 This means the incorrect code is generated and the LED only flashes once:
 
-```nasm
+```x86asm
 flash_thrice:
   ; First 2 writes removed by the compiler
   mov dword ptr [g_port], 1
@@ -410,6 +415,10 @@ as well as the use of static objects/methods.
 
 Let's skip straight to instantiating our objects:
 
+<!-- 
+modcode map
+T token class-name
+-->
 ```csharp
 struct X`1<T> {
   public !T value;
@@ -432,6 +441,12 @@ the specialization will not exist until the program first runs.
 If we run the program, we may get something like this
 (though less annotated than real objects):
 
+<!-- 
+modcode map
+X`1     token class-name;
+Int32   token class-name;
+__Canon token class-name;
+-->
 ```csharp
 using System;
 
@@ -491,6 +506,11 @@ class Y<T> {
 
 This will be desugared into something like:
 
+<!-- 
+modcode map
+T token class-name;
+Value$__storage token regex;
+-->
 ```csharp
 class Y<T> {
   private T Value$__storage;
@@ -514,6 +534,19 @@ class Y<T> {
 Assuming value types are equivalent to fundamental/trivial types,
 the rough C++ translation is something like so:
 
+<!-- 
+modcode map
+ALWAYS_INLINE token label;
+T       token class-name;
+Y$      token class-name;
+__Canon token class-name;
+TypeKey token class-name;
+Map     token class-name;
+
+Value$__storage token regex;
+Count$__data    token regex;
+Count           token regex;
+-->
 ```cpp
 struct Y$ {
 private:
@@ -550,6 +583,10 @@ public:
 
 For some example usage, let's convert the following:
 
+<!-- 
+modcode map
+Y token class-name;
+-->
 ```csharp
 Y<int> i = new() { Value = 55 };
 Y<string> s = new() { Value = "Yello" };
@@ -564,6 +601,11 @@ if (Y<int>.Inc() == 1) {
 
 Which leaves us with:
 
+<!-- 
+modcode map
+Y token class-name;
+String token keyword;
+-->
 ```cpp
 Y<int>* i = New();
 i->Value() = 55;
@@ -639,6 +681,22 @@ But how does this actually work?
 
 Well, here's the desugared code (with some not-so-legal tweaks for readability):
 
+<!-- 
+modcode map
+T         token class-name;
+X         token class-name;
+ConvType  token class-name;
+DispType  token class-name;
+Func      token class-name;
+CallSite  token class-name;
+Binder    token class-name;
+DynBinder token class-name;
+
+CSharpBinderFlags   token class-name;
+UseCompileTimeType  token number;
+IsStaticType        token number;
+None                token number;
+-->
 ```csharp
 using Microsoft.CSharp.RuntimeBinder;
 using System.Runtime.CompilerServices;

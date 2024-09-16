@@ -113,8 +113,11 @@ pre[class*="language-"] {
 }
 
 .token.namespace,
-.token.function,
 .token.class-name {
+	color: #ffe712;
+}
+
+.token.function {
   color: #fec418;
 }
 

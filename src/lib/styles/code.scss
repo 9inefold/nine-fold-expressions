@@ -10,6 +10,7 @@ code {
 code[class*="language-"],
 pre[class*="language-"] {
 	text-align: left;
+  overflow-x: scroll;
 }
 
 pre[class*="language-"] {
