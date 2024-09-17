@@ -12,7 +12,16 @@ const internalDebug = false;
 let debug = internalDebug;
 let warn  = internalDebug;
 
+const isStrict = (() => !this)();
+const hasCallerName = !isStrict && _checkHasCallerName();
+const inNode = typeof window === 'undefined';
+const inBrowser = !inNode;
+
+/// Same as `T | null`.
+type Null<T> = T | null;
+/// More permissive version of `Null`, allows for `undefined`.
 type Nullish<T> = T | null | undefined;
+/// Generic string dictionary.
 export type StrMap<V> = { [key: string]: V };
 
 enum ANSI {
@@ -34,23 +43,22 @@ enum ANSI {
   BrightWhite = 97,
 }
 
-type ANSIType = string | number | ANSI;
+type ANSIString = `${number}` | `${number};${number}`;
+type ANSIType = ANSIString | number | ANSI;
 type CommandCallback = (commands: string[]) => void;
 
 export type RehypeCodeOptions = {
-  extraLangs?: StrMap<string>,
-  commands?: StrMap<CommandCallback>,
-  tagDefault?: boolean,
+  extraLangs?:  StrMap<string>,
+  commands?:    StrMap<CommandCallback>,
+  tagDefault?:  boolean,
 };
 
 type InternalState = {
   showTag: boolean,
   tokMap: StrMap<string>,
+  tokIgnore: Set<string>,
   permissiveMap: boolean,
 };
-
-const inNode = typeof window === 'undefined';
-const inBrowser = !inNode;
 
 const langMap: StrMap<string> = {
   // ASM
@@ -105,6 +113,22 @@ const langMap: StrMap<string> = {
 
 ////////////////////////////////////////////////////////////////////////
 
+function _checkHasCallerName(): boolean {
+  function impl(): boolean {
+    const data = arguments.callee.caller;
+    return typeof (data as any)['name'] === 'string';
+  }
+  return impl();
+}
+
+function getCallerName(twice?: boolean): string {
+  if (!hasCallerName) return '';
+  const { caller } = arguments.callee;
+  return twice ? caller.name : caller.caller.name;
+}
+
+////////////////////////////////////////////////////////////////////////
+
 function escapeString(str: string): string {
   return str
   .replace(/\n/g, "\\n")
@@ -129,7 +153,14 @@ function logDebug(message?: any, ...optionalParams: any[]) {
 }
 
 function logWarning(text?: string) {
-  if (warn) logANSI(text, ANSI.BrightYellow);
+  if (warn) {
+    if (hasCallerName) {
+      const { name } = arguments.callee.caller;
+      logANSI(`${name}: ${text}`, ANSI.BrightYellow);
+    } else {
+      logANSI(text, ANSI.BrightYellow);
+    }
+  }
 }
 
 function logANSI(text?: string, color?: ANSIType) {
@@ -146,26 +177,66 @@ function logANSI(text?: string, color?: ANSIType) {
   }
 }
 
-function dumpPre(pre: DOM.Element) {
-  // if (pre.name !== 'pre') return;
-  if (pre.children.length < 1) return;
-  logANSI(`${pre.name} > ${JSON.stringify(pre.attribs)}`, ANSI.Magenta);
+function nodeSpan(node: Null<DOM.ChildNode>): string {
+  if (!node?.sourceCodeLocation) {
+    return '';
+  }
+  const { startOffset, endOffset } = node.sourceCodeLocation;
+  return `[${startOffset ?? '?'}:${endOffset ?? '?'}]`;
+}
+
+function dumpNode(
+  node: Null<DOM.ChildNode>, 
+  depthStrOrColor?: string | number,
+  colorOverride?: ANSIType
+) {
+  if (!debug || !node) return;
+  /// Extract types
+  if (typeof depthStrOrColor === 'number') {
+    colorOverride = depthStrOrColor;
+    depthStrOrColor = undefined;
+  }
+  const D = depthStrOrColor ?? '';
+  const span = nodeSpan(node);
+  if (!DOMUtil.isTag(node)) {
+    if (DOMUtil.isText(node)) {
+      logInternal('>', `'${escapeString(node.data)}'`, ANSI.Green);
+    } else {
+      logInternal('>', node.type, ANSI.BrightGreen);
+    }
+  } else {
+    let attrs = JSON.stringify(node.attribs);
+    const color = (node.name === 'code') ? ANSI.BrightYellow : ANSI.Cyan;
+    logInternal(`${node.name} >`, attrs, color);
+  }
+
+  // Helper function, avoids code duplication.
+  function logInternal(pre: string, text: string, colorIn: ANSIType) {
+    const color = colorOverride ?? colorIn;
+    if (node && (node.parent || node.prev || node.next)) {
+      logANSI(`${D}${pre} ${text} ${span}`, color);
+    } else {
+      logDebug(D,
+        formatANSI(pre, ANSI.BrightRed),
+        formatANSI(` ${text} ${span}`, color)
+      );
+    }
+  }
+}
+
+function dumpElem(pre: DOM.Element, recurse?: boolean, depth?: number) {
+  if (!debug) return;
+  if (!depth || depth === 0) {
+    logANSI(`${pre.name} > ${JSON.stringify(pre.attribs)}`, ANSI.Magenta);
+    depth = 1;
+  }
+  if (!pre.children.length) return;
+  recurse ??= true;
+  const D = ' '.repeat(depth * 2);
   for (let child of pre.children) {
-    try {
-      const str = JSON.stringify(child);
-      logDebug(`  ${str}`);
-    } catch {
-      if (child.type !== ElementType.Tag) {
-        if (child.type === ElementType.Text) {
-          logANSI(`  > '${escapeString(child.data)}'`, ANSI.Green);
-        } else {
-          logANSI(`  > ${child.type}`, ANSI.BrightGreen);
-        }
-      } else {
-        let attrs = JSON.stringify(child.attribs);
-        const color = (child.name === 'code') ? ANSI.BrightYellow : ANSI.Cyan;
-        logANSI(`  ${child.name} > ${attrs}`, color);
-      }
+    dumpNode(child, D);
+    if (recurse && DOMUtil.isTag(child)) {
+      dumpElem(child, recurse, depth + 1);
     }
   }
 }
@@ -176,20 +247,35 @@ function hasKeys<T>(m: StrMap<T>): boolean {
   return Object.keys(m).length >= 1;
 }
 
-function defaultState(show?: boolean): InternalState {
+function defaultState(show?: boolean, permissive?: boolean): InternalState {
   return {
     showTag: show ?? true, 
     tokMap: {},
-    permissiveMap: false,
+    tokIgnore: new Set(),
+    permissiveMap: permissive ?? false,
   };
 }
 
-
-function extractComment(comment: string): Nullish<string> {
-  const matches = comment.match(/^<!---*\s*(.*?)\s*-*-->$/ms);
-  return matches?.at(1);
+function isElemInClass(node: DOM.Element, data: Set<string>): boolean {
+  if (data.size === 0) {
+    return false;
+  } else if ('class' in node.attribs) {
+    const attrs = node.attribs['class'].split(/\s+/g);
+    for (const attr of attrs) {
+      if (data.has(attr))
+        return true;
+    }
+  }
+  return false;
 }
 
+/// Extracts string from comment, or `null`.
+function extractComment(comment: string): Null<string> {
+  const matches = comment.match(/^<!---*\s*(.*?)\s*-*-->$/ms);
+  return matches?.at(1) ?? null;
+}
+
+/// Extracts a list of commands from a comment, otherwise `[]`.
 function extractCommandFromComment(comment: string): string[] {
   let parsed = extractComment(comment);
   if (!parsed || parsed.length < 1) {
@@ -198,7 +284,8 @@ function extractCommandFromComment(comment: string): string[] {
   return parsed.split(/[\s\n]+/);
 }
 
-function extractPreNode(dom: DOM.ChildNode[]): Nullish<DOM.Element> {
+/// Get an element if `<pre>`, otherwise `null`.
+function extractPreNode(dom: DOM.ChildNode[]): Null<DOM.Element> {
   if (dom.length < 1) return null;
   let pre = dom[0];
   if (pre.type !== ElementType.Tag || pre.name !== 'pre') {
@@ -207,13 +294,14 @@ function extractPreNode(dom: DOM.ChildNode[]): Nullish<DOM.Element> {
   return pre;
 }
 
+/// Get an element if `<pre>`, otherwise `null`.
 function extractCodeNode(pre: DOM.Element): Nullish<DOM.Element> {
   if (pre.children.length < 1) return null;
-  // dumpPre(pre);
   for (let child of pre.children) {
-    if (child.type !== ElementType.Tag || child.name !== 'code') {
+    if (!DOMUtil.isTag(child) || child.name !== 'code') {
       continue;
     }
+    /// Extra check to ensure languages are consistent. May remove...
     if (pre.attribs['class'] === child.attribs['class']) {
       return child;
     }
@@ -237,38 +325,47 @@ function renderSvelteDOM(dom: DOM.ChildNode[]): string {
   return render(dom, { encodeEntities: false });
 }
 
+function fillNodes(parent: Null<DOM.ParentNode>, children?: DOM.ChildNode[]) {
+  if (!parent && !children) {
+    return;
+  } else if (!children) {
+    if (!parent) return;
+    children = parent.childNodes;
+  }
+  let lastChild: Null<DOM.ChildNode> = null;
+  for (let node of children) {
+    node.parent = parent;
+    if (lastChild) {
+      lastChild.next = node;
+      node.prev = lastChild;
+    }
+    lastChild = node;
+  }
+}
+
 function mapKeys(code: DOM.Element, state: InternalState) {
   if (code.name !== 'code') return;
   let { children } = code;
-  const { tokMap, permissiveMap } = state;
+  const { tokMap, tokIgnore, permissiveMap } = state;
+  const regSplitter = /(?:(?<=[^\w$@])(?=[\w$@]))|(?:(?<=[\w$@])(?=[^\w$@]))/gms;
 
   type NestedNodes = DOM.ChildNode | DOM.ChildNode[];
   function mapNodes(child: DOM.ChildNode): NestedNodes {
     if (!DOMUtil.isText(child)) {
-      // TODO: Allow recursion
-      // { return mapNodes(child); }
-      
-      if (!permissiveMap || !DOMUtil.isTag(child)) {
+      if (!permissiveMap || !DOMUtil.isTag(child))
         return child;
-      }
-
-      let cChild = child.children[0];
-      if (!DOMUtil.isText(cChild)) {
+      if (isElemInClass(child, tokIgnore))
         return child;
-      }
 
-      const childData = cChild.data;
-      if (childData in tokMap) {
-        child.attribs['class'] = tokMap[childData];
-      }
+      child.children = child.children.map(mapNodes).flat();
       return child;
     }
 
-    const tokens = child.data
-      .split(/(?:(?<=[^\w$@])(?=[\w$@]))|(?:(?<=[\w$@])(?=[^\w$@]))/gms);
+    const tokens = child.data.split(regSplitter);
     let strBuilder = '';
     let newChildren: DOM.ChildNode[] = [];
 
+    // Creates a new node from the built string.
     function appendBuiltStr() {
       if (strBuilder.length) {
         newChildren.push(new DOMUtil.Text(strBuilder));
@@ -282,10 +379,12 @@ function mapKeys(code: DOM.Element, state: InternalState) {
         continue;
       }
       appendBuiltStr();
-      newChildren.push(new DOMUtil.Element(
+      let newChild = new DOMUtil.Element(
         'span', { 'class': tokMap[tok] },
         [new DOMUtil.Text(tok)], ElementType.Tag
-      ));
+      )
+      newChild.children[0].parent = newChild;
+      newChildren.push(newChild);
     }
 
     if (newChildren.length < 1) {
@@ -293,6 +392,13 @@ function mapKeys(code: DOM.Element, state: InternalState) {
     }
 
     appendBuiltStr();
+
+    // Fill in node data:
+    const { parent } = child;
+    fillNodes(parent, newChildren);
+    newChildren[0].prev = child.prev;
+    let lastElem = newChildren.at(-1);
+    if (lastElem) lastElem.next = child.next;
     return newChildren;
   }
 
@@ -319,12 +425,9 @@ function modifyHTML(
     // code.attribs['data-language'] = lang;
   }
   if (hasKeys(state.tokMap)) {
-    // for (let key in state.tokMap) {
-    //   logANSI(`${key}: ${state.tokMap[key]}`, ANSI.BrightBlue);
-    // }
-    // logDebug();
     mapKeys(code, state);
   }
+  // dumpElem(pre);
   return renderSvelteDOM(dom);
 }
 
@@ -344,12 +447,15 @@ const rehypeCodeBlocks: Plugin<[RehypeCodeOptions?], Root> = (options = {}) => {
     logDebug();
     const modcodeCommands: StrMap<CommandCallback> = {
       'nolang': cmdNoLang,
-      'map':    cmdMapTokens,
       'map-permissive': cmdMapPerm,
+      'map-ignore': cmdMapIgnore,
+      'map':    cmdMapTokens,
     };
 
     let showTag = tagDefault;
-    let state = defaultState(tagDefault);
+    let permissiveMap = true;
+    const getDefault = () => defaultState(showTag, permissiveMap);
+    let state = getDefault();
 
     visit(tree, (node, index, parent) => {
       if ((node.type as string) !== 'raw') {
@@ -364,15 +470,12 @@ const rehypeCodeBlocks: Plugin<[RehypeCodeOptions?], Root> = (options = {}) => {
         handleCommand(cmd, commands);
         return;
       }
-
-      // logANSI(`[${index}]:`, ANSI.BrightRed);
-      // logDebug(`${rawHtml}\n`);
       
       const handler = new DomHandler(doDOMStuff);
       const parser = new Parser(handler, { decodeEntities: false });
       parser.write(rawHtml);
       parser.end();
-      state = defaultState(tagDefault);
+      state = getDefault();
 
       function doDOMStuff(err: Error | null, dom: DOM.ChildNode[]) {
         if (err) {
@@ -386,6 +489,7 @@ const rehypeCodeBlocks: Plugin<[RehypeCodeOptions?], Root> = (options = {}) => {
     });
 
     function handleCommand(fullCmd: string[], extraHandlers?: StrMap<CommandCallback>) {
+      const mdlint = /markdownlint-[\w-]+/;
       if (fullCmd.length < 1) return;
       const prefix = next();
       if (prefix === 'modcode') {
@@ -397,7 +501,7 @@ const rehypeCodeBlocks: Plugin<[RehypeCodeOptions?], Root> = (options = {}) => {
         }
       } else if (extraHandlers && prefix in extraHandlers) {
         extraHandlers[prefix](fullCmd);
-      } else {
+      } else if (!mdlint.test(prefix)) {
         logWarning(`Unknown command prefix '${prefix}'`);
       }
 
@@ -410,14 +514,14 @@ const rehypeCodeBlocks: Plugin<[RehypeCodeOptions?], Root> = (options = {}) => {
 
     function cmdNoLang(args: string[]) {
       const arg = args.at(0) ?? '';
-      if (arg === 'start') {
+      if (!arg.length) {
+        state.showTag = false;
+      } else if (arg === 'start' || arg === 'on') {
         showTag = false;
         state.showTag = false;
-      } else if (arg === 'end') {
+      } else if (arg === 'end' || arg === 'off') {
         showTag = true;
         state.showTag = true;
-      } else if (!arg.length) {
-        state.showTag = false;
       }
     }
 
@@ -438,8 +542,21 @@ const rehypeCodeBlocks: Plugin<[RehypeCodeOptions?], Root> = (options = {}) => {
       }
     }
 
+    function cmdMapIgnore(args: string[]) {
+      state.tokIgnore = new Set([...state.tokIgnore, ...args]);
+    }
+
     function cmdMapPerm(args: string[]) {
-      state.permissiveMap = true;
+      const arg = args.at(0) ?? '';
+      if (!arg.length) {
+        state.permissiveMap = true;
+      } else if (arg === 'start' || arg === 'on') {
+        permissiveMap = true;
+        state.permissiveMap = true;
+      } else if (arg === 'end' || arg === 'off') {
+        permissiveMap = false;
+        state.permissiveMap = false;
+      }
     }
   };
 };

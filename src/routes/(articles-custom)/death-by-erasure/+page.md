@@ -13,6 +13,7 @@ tags:
 ---
 
 <!-- markdownlint-disable MD033 -->
+<!-- modcode map-permissive on -->
 
 <script>
   import Image from '$components/basic/Image.svelte'
@@ -634,6 +635,7 @@ modcode map
 Y token class-name;
 String token keyword;
 -->
+<!-- modcode map-ignore comment -->
 ```cpp
 Y<int>* i = New();
 i->Value() = 55;
@@ -721,6 +723,7 @@ Binder    token class-name;
 DynBinder token class-name;
 
 CSharpBinderFlags   token class-name;
+Create              token function;
 UseCompileTimeType  token number;
 IsStaticType        token number;
 None                token number;
@@ -734,7 +737,7 @@ using ConvType<T> = Func<CallSite, object, X<T>>;
 
 public static partial class VolatileFactory {
   private static class DynBinder<T> {
-    public static CallSite<DispType> Disp;
+    public static CallSite<DispType>    Disp;
     public static CallSite<ConvType<T>> Conv;
   }
 
