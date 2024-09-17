@@ -127,6 +127,14 @@ The issue is, from the compiler's view the first two writes in ``flash_thrice`` 
 be removed, as they have no visible *side effects* (or changes to the program's state).
 This means the incorrect code is generated and the LED only flashes once:
 
+<!-- 
+modcode map
+ptr   token keyword;
+dword token keyword;
+mov   token function;
+ret   token function;
+g_port token variable;
+-->
 ```x86asm
 flash_thrice:
   ; First 2 writes removed by the compiler
@@ -138,6 +146,14 @@ But if we make ``g_port`` ``volatile``, the compiler has to assume these writes
 have side effects ([C11 §5.1.2.3.2](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf#page=32)),
 and generates the correct code:
 
+<!-- 
+modcode map
+ptr   token keyword;
+dword token keyword;
+mov   token function;
+ret   token function;
+g_port token variable;
+-->
 ```x86asm
 flash_thrice:
   mov dword ptr [g_port], 1
@@ -794,6 +810,7 @@ I wrap them using the pseudofunction ``@bind``,
 which would look something like this:
 
 <!-- modcode NOLANG -->
+<!-- modcode map-permissive -->
 ```rust
 macro_rules! bind {
   ($obj:ident, $func:ident) => {

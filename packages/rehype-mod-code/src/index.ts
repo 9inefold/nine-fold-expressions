@@ -9,8 +9,8 @@ import * as DOMUtil from 'domhandler';
 import render from 'dom-serializer';
 
 const internalDebug = false;
-export let debug = internalDebug;
-export let warn  = internalDebug;
+let debug = internalDebug;
+let warn  = internalDebug;
 
 type Nullish<T> = T | null | undefined;
 export type StrMap<V> = { [key: string]: V };
@@ -46,6 +46,7 @@ export type RehypeCodeOptions = {
 type InternalState = {
   showTag: boolean,
   tokMap: StrMap<string>,
+  permissiveMap: boolean,
 };
 
 const inNode = typeof window === 'undefined';
@@ -171,12 +172,18 @@ function dumpPre(pre: DOM.Element) {
 
 ////////////////////////////////////////////////////////////////////////
 
+function hasKeys<T>(m: StrMap<T>): boolean {
+  return Object.keys(m).length >= 1;
+}
+
 function defaultState(show?: boolean): InternalState {
   return {
     showTag: show ?? true, 
-    tokMap: {}
+    tokMap: {},
+    permissiveMap: false,
   };
 }
+
 
 function extractComment(comment: string): Nullish<string> {
   const matches = comment.match(/^<!---*\s*(.*?)\s*-*-->$/ms);
@@ -233,10 +240,27 @@ function renderSvelteDOM(dom: DOM.ChildNode[]): string {
 function mapKeys(code: DOM.Element, state: InternalState) {
   if (code.name !== 'code') return;
   let { children } = code;
-  const { tokMap } = state;
+  const { tokMap, permissiveMap } = state;
+
   type NestedNodes = DOM.ChildNode | DOM.ChildNode[];
-  let mutated: NestedNodes[] = children.map((child) => {
+  function mapNodes(child: DOM.ChildNode): NestedNodes {
     if (!DOMUtil.isText(child)) {
+      // TODO: Allow recursion
+      // { return mapNodes(child); }
+      
+      if (!permissiveMap || !DOMUtil.isTag(child)) {
+        return child;
+      }
+
+      let cChild = child.children[0];
+      if (!DOMUtil.isText(cChild)) {
+        return child;
+      }
+
+      const childData = cChild.data;
+      if (childData in tokMap) {
+        child.attribs['class'] = tokMap[childData];
+      }
       return child;
     }
 
@@ -270,9 +294,9 @@ function mapKeys(code: DOM.Element, state: InternalState) {
 
     appendBuiltStr();
     return newChildren;
-  });
+  }
 
-  code.children = mutated.flat();
+  code.children = children.map(mapNodes).flat();
 }
 
 function modifyHTML(
@@ -294,7 +318,7 @@ function modifyHTML(
     pre.attribs['data-language'] = lang;
     // code.attribs['data-language'] = lang;
   }
-  if (Object.keys(state.tokMap).length > 1) {
+  if (hasKeys(state.tokMap)) {
     // for (let key in state.tokMap) {
     //   logANSI(`${key}: ${state.tokMap[key]}`, ANSI.BrightBlue);
     // }
@@ -321,6 +345,7 @@ const rehypeCodeBlocks: Plugin<[RehypeCodeOptions?], Root> = (options = {}) => {
     const modcodeCommands: StrMap<CommandCallback> = {
       'nolang': cmdNoLang,
       'map':    cmdMapTokens,
+      'map-permissive': cmdMapPerm,
     };
 
     let showTag = tagDefault;
@@ -411,6 +436,10 @@ const rehypeCodeBlocks: Plugin<[RehypeCodeOptions?], Root> = (options = {}) => {
         }
         state.tokMap[key] = toReplace[1];
       }
+    }
+
+    function cmdMapPerm(args: string[]) {
+      state.permissiveMap = true;
     }
   };
 };
