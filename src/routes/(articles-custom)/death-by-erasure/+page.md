@@ -373,9 +373,9 @@ but there's no (standard) way to precompile them generically.
 All you can do is:
 
 ```cpp
-// In MyType.hpp
+// In `MyType.hpp`
 extern template struct X<MyType>;
-// In MyType.cpp
+// In `MyType.cpp`
 template struct X<MyType>;
 ```
 

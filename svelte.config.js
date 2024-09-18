@@ -3,21 +3,14 @@ import adapter from '@sveltejs/adapter-static';
 import { sveltePreprocess } from 'svelte-preprocess';
 import { mdsvex } from 'mdsvex';
 
-// import remarkCodeExtra from 'remark-code-extra';
-
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeExternalLinks from 'rehype-external-links';
 import rehypeSlug from 'rehype-slug';
-
 import rehypeModCode from '@plugin/rehype-mod-code';
 
 const md_extensions = [".md", ".svelte.md", ".svx"];
 const base_path = (process.env.NODE_ENV === 'production') ? '/eight-fold-expressions' : '';
 const layouts = './src/layouts';
-
-const stub = (name) => {
-	return `${layouts}/${name}-s.svelte`;
-}
 
 const aliases = {
 	'$routes': 			'src/routes',
@@ -71,7 +64,14 @@ const config = {
 						properties: { className: ['heading-link'], title: 'Permalink' },
 					}
 				],
-				rehypeModCode,
+				[
+					rehypeModCode,
+					{
+						commands: {'test': testCommand},
+						callbacks: [testCallback],
+						warn: true
+					}
+				],
 			]
 		})
 	],
@@ -88,3 +88,35 @@ const config = {
 };
 
 export default config;
+
+////////////////////////////////////////////////////////////////////////
+// TODO: Move
+
+const noTest = true;
+let runDefault = false;
+let runCallback = false;
+
+/** @type {import('@plugin/rehype-mod-code').CommandCallback} */
+function testCommand(args) {
+	if (noTest) return;
+	if (args.at(0) !== 'log') return;
+	const cmd = args.at(1);
+	if (!cmd) {
+		runCallback = true;
+	} else if (cmd === 'on') {
+		runDefault = true;
+		runCallback = true;
+	} else if (cmd === 'off') {
+		runDefault = false;
+		runCallback = false;
+	}
+}
+
+/** @type {import('@plugin/rehype-mod-code').UserCallback} */
+function testCallback(nodes, lang) {
+	if (noTest) return;
+	if (runCallback) {
+		console.log(lang);
+	}
+	runCallback = runDefault;
+}
