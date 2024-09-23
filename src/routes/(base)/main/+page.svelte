@@ -32,40 +32,35 @@
 		display: none;
 	}
 
+	@mixin half-width($width) {
+		width: $width;
+		margin-left: math.div((100% - $width), 2);
+	}
+
 	#scroller {
 		overflow: hidden;
 		overflow-block: clip;
 		overflow-wrap: normal;
-		$width: 35%;
-		width: $width;
-		margin-left: 50% - math.div($width, 2);
+
+		@media (1280px < width) {
+			@include half-width(70%);
+		}
+		@media (width <= 1280px) {
+			@include half-width(85%);
+		}
 	}
 
 	#scrolling {
 		// Workaround for disabling emojis
 		font-family: monospace;
 		white-space: nowrap;
+		display: inline-flex;
+		min-width: 100%;
 		animation: my-animation 10s linear infinite;
 	}
 
-	@media (480px < width <= 720px) {
-		#scroller {
-			$width: 50%;
-			width: $width;
-			margin-left: 50% - math.div($width, 2);
-		}
-	}
-
-	@media (width <= 480px) {
-		#scroller {
-			$width: 75%;
-			width: $width;
-			margin-left: 50% - math.div($width, 2);
-		}
-	}
-
 	@keyframes my-animation {
-	  from {
+		from {
 	    -moz-transform: translateX(100%);
 	    -webkit-transform: translateX(100%);
 	    transform: translateX(100%);

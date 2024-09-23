@@ -330,6 +330,7 @@ Translating our example, we get:
 <!-- 
 modcode map
 String token keyword;
+T token class-name;
 -->
 ```cpp
 using String = std::string;
@@ -372,6 +373,12 @@ but there's no (standard) way to precompile them generically.
 
 All you can do is:
 
+<!-- 
+modcode map
+X token class-name;
+MyType token class-name;
+-->
+<!-- modcode map-ignore comment -->
 ```cpp
 // In `MyType.hpp`
 extern template struct X<MyType>;
