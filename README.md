@@ -1,4 +1,4 @@
-# Eight Fold Expressions
+# Nine Fold Expressions
 
 A blog of sorts...
 Made this mostly from scratch, all the components are at least.
