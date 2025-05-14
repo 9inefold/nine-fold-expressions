@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc --build --clean && tsc --build",
-    "prepack": "npm run build"
+    "prepack": "pnpm run build"
   },
   "devDependencies": {
     "dom-serializer": "^2.0.0",
