@@ -39,7 +39,7 @@
 </script>
 
 <svelte:head>
-  <meta name="creator" content="eightfold" />
+  <meta name="creator" content="ninefold" />
   <meta name="keywords" content={getKeywords().join(', ')} />
 
   {#if post.excerpt}

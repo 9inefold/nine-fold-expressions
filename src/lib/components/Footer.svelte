@@ -22,10 +22,11 @@
       src="/icons/github.png"
       alt="github"
       size={size}
-      href="https://github.com/8ightfold"
+      href="https://github.com/9inefold"
       target="_blank"
       rel="author external me"
     />
+<!--
     <Icon
       src="/icons/youtube.png"
       alt="youtube"
@@ -34,8 +35,9 @@
       target="_blank"
       rel="author external me"
     />
+-->
   </p>
-  <p id="cpy">&copy; eightfold {new Date().getFullYear()}</p>
+  <p id="cpy">&copy; ninefold {new Date().getFullYear()}</p>
 </footer>
 
 <style lang="scss">

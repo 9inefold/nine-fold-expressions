@@ -28,13 +28,13 @@ jobs:
 
       - name: build
         env:
-          BASE_PATH: '/eight-fold-expressions'
+          BASE_PATH: '/nine-fold-expressions'
         run: |
           pnpm run build
           touch build/.nojekyll
 
       - name: Upload Artifacts
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         with:
           # this should match the `pages` option in your adapter-static options
           path: 'build/'

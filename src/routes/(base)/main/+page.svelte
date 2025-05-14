@@ -8,7 +8,7 @@
 	<Jittery text="I call it cappuchino :coffee: ..." />
 </h1>
 
-<h1><Jittery text="Hi, I'm eightfold!" /></h1>
+<h1><Jittery text="Hi, I'm ninefold!" /></h1>
 <p id="pet">This is my blog...</p>
 
 <body>

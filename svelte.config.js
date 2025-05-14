@@ -9,7 +9,7 @@ import rehypeSlug from 'rehype-slug';
 import rehypeModCode from '@plugin/rehype-mod-code';
 
 const md_extensions = [".md", ".svelte.md", ".svx"];
-const base_path = (process.env.NODE_ENV === 'production') ? '/eight-fold-expressions' : '';
+const base_path = (process.env.NODE_ENV === 'production') ? '/nine-fold-expressions' : '';
 const layouts = './src/layouts';
 
 const aliases = {

@@ -6,13 +6,13 @@
 <h1><Jittery text="About me (and the site):" /></h1>
 <div id="block">
   <p>
-    Hi, I'm eightfold! A fair amount of people have asked me to make a blog,
+    Hi, I'm ninefold! A fair amount of people have asked me to make a blog,
     and I finally have. It was actually more fun to work on than I expected!
   </p>
   <p>
     If you don't know me, I'm mainly a C/C++ programmer who works on some...
     <a 
-      href="https://github.com/8ightfold/headless-compiler"
+      href="https://github.com/9inefold/headless-compiler"
       target="_blank"
       rel="author external noopener"
     >"insane"</a> projects.
