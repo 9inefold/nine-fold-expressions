@@ -31,7 +31,7 @@
       src="/icons/youtube.png"
       alt="youtube"
       size={size}
-      href="https://www.youtube.com/@8ightfold"
+      href="https://www.youtube.com"
       target="_blank"
       rel="author external me"
     />
