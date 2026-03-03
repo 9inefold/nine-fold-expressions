@@ -22,6 +22,11 @@ jobs:
         with:
           node-version: 18.15.0
           cache: pnpm
+      
+      - name: Print tsc
+        shell: bash
+        run: |
+          tsc --version
 
       - name: Install dependencies
         run: pnpm install
