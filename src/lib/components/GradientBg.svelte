@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { debug } from '$lib/config';
   import { makeCssUrl } from "$util/url";
   import { vfx } from "$util/stores";
   type Pos = { x: number; y:number; };
