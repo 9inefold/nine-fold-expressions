@@ -12,6 +12,7 @@
 
 {#if post}
   {#if post.component === false}
+    <!-- Sets up the same layout style used in (articles) -->
     <DefaultLayout>
       <GradientBg />
       <Post post={post}>
@@ -19,7 +20,7 @@
       </Post>
     </DefaultLayout>
   {:else}
-    <ScrollBar />
+    <!-- Selects from the layouts in layout/ -->
     <Binder post={post}>
       <slot />
     </Binder>

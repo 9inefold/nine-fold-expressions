@@ -3,14 +3,14 @@
   import Default from '$layouts/Default.svelte';
   import type { BlogPost } from '$util/types';
 
-  export let post: BlogPost;
-  $: kind = post.component as string;
-
   type BindingType = Record<string, any>;
   const bindings: BindingType = {
     'default':  Default,
     'empty':    Empty,
   }
+
+  export let post: BlogPost;
+  $: kind = post.component as string;
   $: bound = bindings[kind];
 </script>
 
