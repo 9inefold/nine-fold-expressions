@@ -19,6 +19,11 @@
   $: scale = 50;
   $: canvasScale = 330;
 
+  /// filter:
+  ///   invert(${invert ? 100 : 0}%)
+  ///   opacity(${opacity}%)
+  ///   url(#ripple-filter);
+
   $: cssurl = makeCssUrl(href);
   $: style = `
   filter:
@@ -142,8 +147,10 @@
   #bg {
     animation-composition: add;
     background-blend-mode: color-dodge;
-    filter: contrast(1);
     transform: translate3d(0, 0, 0);
+    filter:
+      contrast(1)
+      url(#ripple-filter);
     
     position: fixed;
     z-index: -11;
@@ -164,5 +171,25 @@
   @keyframes slide-y {
     from { background-position: bottom; }
     to { background-position: top; }
+  }
+
+  // We have to do it without "none" since that stops ff from loading the effects!
+  // Fun!
+  svg.bg-filter {
+    position: fixed;
+    z-index: -999;
+    width: 0;
+    height: 0;
+    top: 0;
+    left: 0;
+	  //display: none;
+  }
+
+  svg.test-svg {
+    pointer-events: none;
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    left: 0;
   }
 </style>
