@@ -11,7 +11,7 @@
 			<Jittery text="{title}" onhover={true} />
 		</h1>
 	</a>
-	<div class="subheader">
+	<div class="subheader" role="banner">
 		<a id="logo" href="{homepage}">
 			<Logo size={60} />
 		</a>

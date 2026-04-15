@@ -23,18 +23,22 @@
 	}
 
   .jittery span {
+    text-rendering: optimizeSpeed;
     animation: jitter-smooth 600ms linear infinite;
   }
 
 	.jittery-sel:hover span {
+    text-rendering: optimizeSpeed;
 		animation: jitter-smooth 600ms linear infinite;
 	}
 
 	.jittery-jnk span {
+    text-rendering: optimizeSpeed;
     animation: jitter-jank 1s steps(5, jump-none) infinite;
   }
 
 	.jittery-sel-jnk:hover span {
+    text-rendering: optimizeSpeed;
 		animation: jitter-jank 1s steps(5, jump-none) infinite;
 	}
 

@@ -3,6 +3,7 @@
   import { title, url, blogUrl, keywords, debug } from '$lib/config'
   import dateformat from 'dateformat';
   import Jittery from '$components/basic/Jittery.svelte';
+  import ScrollBar from '$components/basic/ScrollBar.svelte';
 
   // import pdark from 'svelte-highlight/styles/paraiso-dark';
   // import pojoaque from '$styles/pojoaque';
@@ -62,8 +63,11 @@
   <!-- {@html codeStyle} -->
 </svelte:head>
 
+<!-- Post scrollbar -->
+<ScrollBar />
+
 <article>
-<main>
+<main id="blogpost">
   <h1><Jittery text="{post.title}" onhover={hoverJitter} /></h1>
   <p>
     Published on: {formatDate(post.date)}

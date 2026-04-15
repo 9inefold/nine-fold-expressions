@@ -4,6 +4,7 @@
   import Binder from '$components/Binder.svelte'
   import GradientBg from '$components/GradientBg.svelte'
   import DefaultLayout from '$components/DefaultLayout.svelte'
+  import ScrollBar from '$components/basic/ScrollBar.svelte'
 
   export let data: { post: BlogPost };
 	$: ({ post } = data);
@@ -18,6 +19,7 @@
       </Post>
     </DefaultLayout>
   {:else}
+    <ScrollBar />
     <Binder post={post}>
       <slot />
     </Binder>
