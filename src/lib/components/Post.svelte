@@ -93,6 +93,10 @@
     margin-left: 15%;
   }
 
+  #blogpost::-webkit-scrollbar {
+    display: initial;
+  }
+
   @media (600px < width <= 1080px) {
     .text {
       width: 80%;

@@ -21,7 +21,7 @@ pre[class*="language-"] {
 }
 
 pre > code[class*="language-"] {
-	font-size: 1em;
+	/* font-size: 1em; */
   background-color: rgba(0,0,0,0);
   border-radius: calc(.5rem + 1px);
   color: #a39e9b;

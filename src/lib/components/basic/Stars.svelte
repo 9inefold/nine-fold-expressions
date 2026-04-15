@@ -11,7 +11,7 @@
 <style lang="scss">
   img {
     animation: float 2s ease infinite;
-    max-width: 100%;
+    max-width: 95%;
   }
 
   @mixin t($y, $sk: 0) {
