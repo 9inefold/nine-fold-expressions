@@ -300,7 +300,7 @@ In this context, **C# uses homogeneous generics.** Ugh.
 
 To those wondering what this means, it's actually pretty simple...
 but I'm gonna overexplain it because this is **my** blog dammit!
-(or skip [here](#what-about-c) if you don't care).
+(or [skip here if you don't care](#what-about-c)).
 
 Lets first make a "cross-language" example:
 
