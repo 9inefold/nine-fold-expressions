@@ -1,19 +1,19 @@
 import { writable } from "svelte/store";
-import * as Prefs from "$util/preferences";
+import * as prefs from "$util/preferences";
 
 export { SIMPLIFY_VFX } from "$util/preferences";
 
 /// Sets a value in the localStore.
-export function setStore<K extends keyof Prefs.PreferencesTagNameMap>(key: K, value: Prefs.PreferenceType<K>) {
-  return Prefs.setPreference(key, {
+export function setStore<K extends keyof prefs.PreferencesTagNameMap>(key: K, value: prefs.PreferenceType<K>) {
+  return prefs.setPreference(key, {
     setter: (k, v) => localStorage.setItem(k, v)
   }, value);
 }
 
-export function getStore<K extends keyof Prefs.PreferencesTagNameMap>(key: K, _default?: Prefs.PreferenceType<K>) {
+export function getStore<K extends keyof prefs.PreferencesTagNameMap>(key: K, _default?: prefs.PreferenceType<K>) {
   if (!localStorage)
     return;
-  return Prefs.getPreference(key, {
+  return prefs.getPreference(key, {
     getter: (k) => localStorage.getItem(k),
     setter: (k, v) => localStorage.setItem(k, v)
   }, _default);

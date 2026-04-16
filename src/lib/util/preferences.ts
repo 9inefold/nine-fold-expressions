@@ -17,7 +17,7 @@ type Getter = {
   setter?: (key: string, value: string) => void
 }
 
-export const SIMPLIFY_VFX = PreferencesTagRemap.vfx;
+export const SIMPLIFY_VFX = 'vfx';
 
 /// Sets a value in the localStore.
 export function setPreference<K extends keyof PreferencesTagNameMap>(
@@ -36,10 +36,7 @@ function parseStoreValue<K extends keyof Preferences>(key: K, value: string): an
   switch (typeTag) {
     // boolean
     case 'boolean': {
-      if (value === 'true')
-        return true;
-      else
-        return false;
+      return value === 'true';
     }
     case 'number': {
       if (value.at(0) === '0') {
@@ -76,8 +73,8 @@ export function getPreference<K extends keyof PreferencesTagNameMap>(
   const value = getter(realKey);
   //console.trace(`${realKey}: ${value}`);
   if (value == null || value == undefined) {
-    if (setter)
-      setPreference(realKey, {setter}, _default);
+    if (setter && _default !== undefined)
+      setter(realKey, `${_default}`);
     return _default;
   }
 
