@@ -2,6 +2,7 @@
   import { debug } from '$lib/config';
   import { makeCssUrl } from "$util/url";
   import { vfx } from "$util/stores";
+  import { onMount } from 'svelte';
   type Pos = { x: number; y:number; };
 
   export let href  = `/images/space-bg.gif`;
@@ -14,6 +15,38 @@
   export let dark  = "magenta";
   export let width = 2;
   export let gap   = 3;
+
+  type TimerType = ReturnType<typeof setTimeout>;
+  let focused = true;
+  let lastClicked: number = 0;
+  let handle: TimerType | null = null;
+
+  onMount(() => {
+    if (document)
+      focused = document.hasFocus();
+    // TODO: Can probably simplify this, we don't actually need to know when unfocused
+    window.onfocus = function() {
+      focused = false;
+      // We delay this so it can eat the mousedown event when first entering.
+      const _handle = setTimeout(() => {
+        if (focused)
+          return;
+        //console.log('focused');
+        focused = true;
+        if (handle == _handle)
+          handle = null;
+      }, 50);
+      handle = _handle;
+    };
+    //window.onblur = function() {
+    //  if (handle != null) {
+    //    clearTimeout(handle);
+    //    handle = null;
+    //  }
+    //  //console.log('unfocused');
+    //  focused = false;
+    //};
+  });
 
   $: frequency = 0.05;
   $: scale = 50;
@@ -45,12 +78,23 @@
 
 <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions (I don't care!!!) -->
 <div id="bg"
-  class:slide={slide && !$vfx}
+  class:slide={!$vfx && slide}
   style="{style}{style_slide}"
-  on:click={() => $vfx = !$vfx}
+  on:mousedown={() => {
+    if (!focused)
+      return;
+    lastClicked = Date.now();
+    //console.log('clicked before');
+  }}
+  on:mouseup={() => {
+    const ms = Date.now() - lastClicked;
+    lastClicked = 0;
+    if (focused && ms < 1500) {
+      //console.log('clicked after');
+      $vfx = !$vfx
+    }
+  }}
 />
-
-
 
 {#if !debug}
 
