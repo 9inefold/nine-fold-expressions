@@ -28,6 +28,7 @@
 {#each filteredPostTable as post}
   <a class="post"
     href="{blogUrl}/{post.slug}"
+    data-sveltekit-preload-data="tap"
   >
     <div>
       <b>{post.title}</b>
