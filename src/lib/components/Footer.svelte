@@ -37,7 +37,7 @@
     />
 -->
   </p>
-  <p id="cpy">&copy; ninefold {new Date().getFullYear()}</p>
+  <p id="cpy">&copy; ninefold 2024-{new Date().getFullYear()}</p>
 </footer>
 
 <style lang="scss">
