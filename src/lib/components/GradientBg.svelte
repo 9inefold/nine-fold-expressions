@@ -27,25 +27,17 @@
     // TODO: Can probably simplify this, we don't actually need to know when unfocused
     window.onfocus = function() {
       focused = false;
+      if (handle !== null)
+        clearTimeout(handle);
       // We delay this so it can eat the mousedown event when first entering.
-      const _handle = setTimeout(() => {
+      handle = setTimeout(() => {
         if (focused)
           return;
+        handle = null;
         //console.log('focused');
         focused = true;
-        if (handle == _handle)
-          handle = null;
       }, 50);
-      handle = _handle;
     };
-    //window.onblur = function() {
-    //  if (handle != null) {
-    //    clearTimeout(handle);
-    //    handle = null;
-    //  }
-    //  //console.log('unfocused');
-    //  focused = false;
-    //};
   });
 
   $: frequency = 0.05;
