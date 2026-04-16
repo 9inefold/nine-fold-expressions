@@ -28,7 +28,7 @@ export function setPreference<K extends keyof PreferencesTagNameMap>(
   // Now set the keys.
   const realKey = PreferencesTagRemap[key];
   data.setter(realKey, `${value}`);
-  console.trace(`${realKey}: ${value}`);
+  //console.trace(`${realKey}: ${value}`);
 }
 
 function parseStoreValue<K extends keyof Preferences>(key: K, value: string): any {
@@ -74,7 +74,7 @@ export function getPreference<K extends keyof PreferencesTagNameMap>(
 
   // Retrieve localStorage value if it's been set already
   const value = getter(realKey);
-  console.trace(`${realKey}: ${value}`);
+  //console.trace(`${realKey}: ${value}`);
   if (value == null || value == undefined) {
     if (setter)
       setPreference(realKey, {setter}, _default);
