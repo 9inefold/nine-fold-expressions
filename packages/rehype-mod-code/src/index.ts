@@ -199,7 +199,7 @@ function logWarning(text: string) {
     const { name } = arguments.callee.caller;
     text = `${name}: ${text}`;
   }
-  console.log(formatANSI(text, ANSI.BrightYellow));
+  console.warn(formatANSI(text, ANSI.BrightYellow));
 }
 
 function logANSI(text?: string, color?: ANSIType) {
@@ -568,6 +568,7 @@ const rehypeCodeBlocks: Plugin<[RehypeCodeOptions?], Root> = (options = {}) => {
     warn:  optWarn  = internalDebug,
     debug: optDebug = internalDebug,
   } = options;
+  
   return (tree) => {
     const modcodeCommands: StrMap<CommandCallback> = {
       'nolang': cmdNoLang,
@@ -586,6 +587,7 @@ const rehypeCodeBlocks: Plugin<[RehypeCodeOptions?], Root> = (options = {}) => {
 
     if (debug || warn)
       console.log('');
+
     visit(tree, (node, index, parent) => {
       if ((node.type as string) !== 'raw') {
         return;

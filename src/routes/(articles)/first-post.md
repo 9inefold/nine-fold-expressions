@@ -7,7 +7,6 @@ tags:
 ---
 
 <!-- markdownlint-disable MD033 -->
-<!-- invalid -->
 <!-- test log on -->
 
 Welcome to my blog! This is just a test post, real content coming soon...
