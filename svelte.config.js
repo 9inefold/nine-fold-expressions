@@ -9,8 +9,8 @@ import rehypeSlug from 'rehype-slug';
 import rehypeModCode from '@plugin/rehype-mod-code';
 
 const md_extensions = [".md", ".svelte.md", ".svx"];
-const base_path = (process.env.NODE_ENV === 'production') ? '/nine-fold-expressions' : '';
-const layouts = './src/layouts';
+const IN_PROD = process.env.NODE_ENV === 'production';
+const BASE_PATH = IN_PROD ? '/nine-fold-expressions' : '';
 
 const aliases = {
 	'$routes': 			'src/routes',
@@ -27,6 +27,23 @@ const langs = {
 	rs:			'rust',
 };
 
+/** @type {import('sass').LegacySyncImporter}
+ * Converts `$alias/route` into `real/path/to/folder/route`.
+ */
+function mapImporterAliases(url, prev) {
+  if (!url.startsWith('$'))
+		return null;
+	const parts = url.split('/');
+	if (!parts?.length)
+		return null;
+	const route = aliases[parts[0]];
+	if (!route)
+		return null;
+	return {
+		file: ['.', route, ...parts.slice(1)].join('/')
+	};
+}
+
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	extensions: [".svelte", ...md_extensions],
@@ -34,19 +51,9 @@ const config = {
 		sveltePreprocess({
 			// postcss: true
 			scss: {
-				importer: function(url, _) {
-					if (!url.startsWith('$'))
-						return null;
-					const parts = url.split('/');
-					if (!parts?.length)
-						return null;
-					const route = aliases[parts.at(0)];
-					if (!route)
-						return null;
-					return {
-						file: ['.', route, ...parts.slice(1)].join('/')
-					};
-				}
+				importer: mapImporterAliases,
+        //outputStyle: IN_PROD ? 'compressed' : 'expanded',
+        outputStyle: 'compressed',
 			}
 		}),
 		mdsvex({
@@ -68,7 +75,9 @@ const config = {
 					rehypeModCode,
 					{
 						commands: {'test': testCommand},
-						callbacks: [testCallback],
+						callbacks: [
+              testCallback,
+            ],
 						warn: true
 					}
 				],
@@ -83,7 +92,7 @@ const config = {
 			// crawl: true,
 			handleHttpError: 'warn',
 		},
-    paths: { base: base_path, }
+    paths: { base: BASE_PATH, }
 	}
 };
 
