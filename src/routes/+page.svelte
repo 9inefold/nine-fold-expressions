@@ -2,7 +2,7 @@
 	import { onMount, afterUpdate } from 'svelte';
 	import { base, homepage, debug } from '$lib/config';
   import Jittery from '$components/basic/Jittery.svelte';
-  import GradientBg from '$lib/components/GradientBg.svelte'
+  import CircleGradientBg from '$components/CircleGradientBg.svelte'
   import { spring } from 'svelte/motion';
   import '$styles/style.scss'
 
@@ -59,7 +59,7 @@
 />
 
 <div id="block">
-	<GradientBg
+	<CircleGradientBg
 	  href="@images/grainy-bg.gif"
 	  position="{$coords.x}px {$coords.y}px"
 	  slideSpeed={{x: vsx, y: vsy}}
