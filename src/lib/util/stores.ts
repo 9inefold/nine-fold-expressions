@@ -1,40 +1,23 @@
-import { browser } from "$app/environment";
 import { writable } from "svelte/store";
+import * as Prefs from "$util/preferences";
 
-const SIMPLIFY_VFX = 'simplify-vfx';
-const defaultVfx = false;
+export { SIMPLIFY_VFX } from "$util/preferences";
 
-function setVfx(value: string | boolean) {
-  if (!browser)
+/// Sets a value in the localStore.
+export function setStore<K extends keyof Prefs.PreferencesTagNameMap>(key: K, value: Prefs.PreferenceType<K>) {
+  return Prefs.setPreference(key, {
+    setter: (k, v) => localStorage.setItem(k, v)
+  }, value);
+}
+
+export function getStore<K extends keyof Prefs.PreferencesTagNameMap>(key: K, _default?: Prefs.PreferenceType<K>) {
+  if (!localStorage)
     return;
-  if (typeof value === 'string') {
-    localStorage.setItem(SIMPLIFY_VFX, value);
-  } else {
-    localStorage.setItem(SIMPLIFY_VFX, `${value}`);
-  }
+  return Prefs.getPreference(key, {
+    getter: (k) => localStorage.getItem(k),
+    setter: (k, v) => localStorage.setItem(k, v)
+  }, _default);
 }
 
-function loadVfx(): boolean {
-  if (!browser)
-    return defaultVfx;
-  // Retrieve localStorage value if it's been set already
-  const valueStr = localStorage.getItem(SIMPLIFY_VFX);
-  if (!valueStr) {
-    setVfx(defaultVfx);
-    return defaultVfx;
-  }
-  // Parse value
-  if (valueStr === 'true') {
-    return true;
-  } else if (valueStr === 'false') {
-    return false;
-  } else {
-    setVfx(defaultVfx);
-    return defaultVfx;
-  }
-}
-
-let storedVfx = loadVfx();
-export const vfx = writable(storedVfx);
-// subscribe to changes
-vfx.subscribe((val) => setVfx(val));
+//let storedVfx = getVfx(defaultVfx);
+export const vfx = writable<boolean>();
