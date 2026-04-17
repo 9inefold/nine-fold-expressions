@@ -75,7 +75,7 @@
 	/>
 
 	<h1>
-	  <a href="{homepage}" data-sveltekit-preload-data="hover">
+	  <a href="{homepage}" data-sveltekit-preload-data="off">
 	    <Jittery text="Enter..." onhover={true} />
 	  </a>
 	</h1>

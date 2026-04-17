@@ -12,7 +12,7 @@
 		</h1>
 	</a>
 	<div class="subheader" role="banner">
-		<a id="logo" href="{homepage}">
+		<a id="logo" href="{homepage}" data-sveltekit-preload-data="off">
 			<Logo size={60} />
 		</a>
 		<nav>
