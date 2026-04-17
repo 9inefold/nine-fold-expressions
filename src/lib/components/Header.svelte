@@ -6,7 +6,7 @@
 </script>
 
 <header>
-	<a id="aname" href="{homepage}">
+	<a id="aname" href="{homepage}" data-sveltekit-preload-data="off">
 		<h1 id="name">
 			<Jittery text="{title}" onhover={true} />
 		</h1>
