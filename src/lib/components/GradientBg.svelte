@@ -5,7 +5,7 @@
   import { onMount } from 'svelte';
   type Pos = { x: number; y:number; };
 
-  export let href  = `/images/space-bg.gif`;
+  export let href  = '/images/space-bg.gif';
   export let opacity = 100;
   export let position = "top left";
   export let invert = false;
@@ -50,10 +50,12 @@
   ///   url(#ripple-filter);
 
   $: cssurl = makeCssUrl(href);
-  $: style = `
+  $: filter = ((`
   filter:
     invert(${invert ? 100 : 0}%)
     opacity(${opacity}%);
+  `));
+  $: background = ((`
   background:
     repeating-radial-gradient(
       circle at ${position},
@@ -62,16 +64,14 @@
       ${dark}  ${width + gap}px,
       ${light} ${width + gap * 2}px
     ), ${cssurl};
-  `;
-  $: style_slide = `
-    animation-duration:${slideSpeed.y}s,${slideSpeed.x}s;
-  `;
+  `));
+  $: style_slide = `animation-duration:${slideSpeed.y}s,${slideSpeed.x}s;`;
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions (I don't care!!!) -->
 <div id="bg"
   class:slide={!$vfx && slide}
-  style="{style}{style_slide}"
+  style="{filter}{background}{style_slide}"
   on:mousedown={() => {
     if (!focused)
       return;

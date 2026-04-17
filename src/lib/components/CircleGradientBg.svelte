@@ -15,29 +15,22 @@
   export let gap   = 3;
 
   $: cssurl = makeCssUrl(href);
-  let background;
-
-  $: {
-    background = $vfx ? cssurl :
-      `repeating-radial-gradient(
-        circle at ${position},
-        ${light},
-        ${dark}  ${width}px,
-        ${dark}  ${width + gap}px,
-        ${light} ${width + gap * 2}px
-      ), ${cssurl}`
-  }
-
-  $: style = `
+  $: background = $vfx ? cssurl : ((`
+    repeating-radial-gradient(
+      circle at ${position},
+      ${light},
+      ${dark}  ${width}px,
+      ${dark}  ${width + gap}px,
+      ${light} ${width + gap * 2}px
+    ), ${cssurl}`));
+  $: style = ((`
   filter:
     invert(${invert ? 100 : 0}%)
     opacity(${opacity}%);
   background:
     ${background};
-  `;
-  $: style_slide = `
-    animation-duration:${slideSpeed.y}s,${slideSpeed.x}s;
-  `;
+  `));
+  $: style_slide = `animation-duration:${slideSpeed.y}s,${slideSpeed.x}s;`;
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions (I don't care!!!) -->
@@ -57,7 +50,6 @@
   #bg-circle {
     animation-composition: add;
     background-blend-mode: color-dodge;
-    transform: translate3d(0, 0, 0);
     filter: contrast(1);
     
     position: fixed;

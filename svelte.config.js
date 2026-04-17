@@ -1,6 +1,6 @@
 import adapter from '@sveltejs/adapter-static';
 // import { vitePreprocess } from '@sveltejs/kit/vite';
-import { sveltePreprocess } from 'svelte-preprocess';
+import { sveltePreprocess, replace } from 'svelte-preprocess';
 import { mdsvex } from 'mdsvex';
 
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
@@ -27,7 +27,8 @@ const langs = {
 	rs:			'rust',
 };
 
-/** @type {import('sass').LegacySyncImporter}
+/**
+ * @type {import('sass').LegacySyncImporter}
  * Converts `$alias/route` into `real/path/to/folder/route`.
  */
 function mapImporterAliases(url, prev) {
@@ -44,11 +45,23 @@ function mapImporterAliases(url, prev) {
 	};
 }
 
+/** @param {string} str */
+function minifyString(match, str) {
+  const out = str.trim()
+    .replaceAll(/\s+/g, ' ')
+    .replaceAll(' )', ')')
+    .replaceAll(/([:;,\(]) /g, '$1');
+  return `\`${out}\``;
+}
+
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	extensions: [".svelte", ...md_extensions],
 	preprocess: [
 		sveltePreprocess({
+      replace: [
+        [/\(\(`(.+?)`\)\)/gms, minifyString],
+      ],
 			// postcss: true
 			scss: {
 				importer: mapImporterAliases,
