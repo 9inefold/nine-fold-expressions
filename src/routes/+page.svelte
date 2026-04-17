@@ -3,10 +3,11 @@
 	import { base, homepage, debug } from '$lib/config';
   import Jittery from '$components/basic/Jittery.svelte';
   import CircleGradientBg from '$components/CircleGradientBg.svelte'
-  import { spring } from 'svelte/motion';
+  import { spring, tweened } from 'svelte/motion';
   import '$styles/style.scss'
 
 	onMount(() => {
+    // Load the background before we do anything.
 		const style = document.documentElement.style;
 		style.overflowY = 'hidden';
 		return () => { style.overflowY = 'scroll'; };
@@ -21,8 +22,8 @@
 	});
 
   let size = spring(1);
-  let light = spring(220);
-  let a_light = spring(1.0);
+  let light = tweened(220);
+  let a_light = tweened(1.0);
 
   $: color_light = $light;
   $: alpha_light = $a_light;
@@ -38,7 +39,11 @@
 <svelte:window bind:outerWidth bind:outerHeight />
 
 <svelte:document
+  on:blur={(e) => {
+    coords.set({ x: 100, y: 100 }, { hard: true });
+  }}
 	on:pointerleave={(e) => {
+    //console.log(`left: {${e.clientX}, ${e.clientY}}`)
 		coords.set({ x: (e.clientX / 2), y: (e.clientY / 2) });
 	}}
   on:mousemove={(e) => {
@@ -54,7 +59,7 @@
   on:mouseup={() => {
     size.set(1);
     light.set(220);
-    a_light.set(1.0);
+    a_light.set(0.7);
   }}
 />
 
@@ -70,7 +75,7 @@
 	/>
 
 	<h1>
-	  <a href="{homepage}">
+	  <a href="{homepage}" data-sveltekit-preload-data="hover">
 	    <Jittery text="Enter..." onhover={true} />
 	  </a>
 	</h1>
