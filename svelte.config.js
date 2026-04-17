@@ -105,10 +105,7 @@ const config = {
 			// crawl: true,
 			handleHttpError: 'warn',
 		},
-    paths: {
-      base: BASE_PATH,
-      relative: false,
-    }
+    paths: { base: BASE_PATH }
 	}
 };
 
