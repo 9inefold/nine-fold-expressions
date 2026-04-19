@@ -4,6 +4,7 @@ date: 2024-09-10
 updated: 2024-09-13
 hidden: false
 excerpt: Join me as I rant about generics and take a peek behind the curtains.
+cover: /cover/death-by-erasure.png
 component: default
 tags:
   - dirty-laundry
@@ -174,7 +175,7 @@ C# ``volatile`` is required to be [acquire/release](https://learn.microsoft.com/
 
 A nice choice for sure, as it helps avoid *some* of the issues that trip up a lot of C++ beginners
 (though it's important to note C# ``volatile`` is still not magical,
-read more [here](https://ericlippert.com/2011/06/16/atomicity-volatility-and-immutability-are-different-part-three/)).
+[read more here](https://ericlippert.com/2011/06/16/atomicity-volatility-and-immutability-are-different-part-three/)).
 
 So... easy fix?
 

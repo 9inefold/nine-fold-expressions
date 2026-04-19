@@ -7,8 +7,8 @@ const tagAliases: Map<string, string> = new Map<string, string>([
 ]);
 
 export const fetchPosts = (doRender: boolean = false): BlogPost[] => {
-	const flat = import.meta.glob('$routes/*/*.md', {eager: true});
-	const nested = import.meta.glob('$routes/*/*/*.md', {eager: true});
+	const flat = import.meta.glob('$routes/post/*/*.md', {eager: true});
+	const nested = import.meta.glob('$routes/post/*/*/*.md', {eager: true});
 	const imports = { ...flat, ...nested };
 	const posts: BlogPost[] = [];
 
@@ -19,10 +19,9 @@ export const fetchPosts = (doRender: boolean = false): BlogPost[] => {
 				post.metadata.slug = getSlug(path);
 			}
 			if (post.metadata.image?.length) {
-				post.metadata.image =
-				makeUrl(post.metadata.image);
+        post.metadata.image = makeUrl(post.metadata.image);
 			}
-			
+
 			const render = doRender && post.default.render;
 			const comp = post.metadata.component;
 
@@ -76,7 +75,8 @@ function mapTags(tags: string[]): string[] {
 function dateSort(lhs: BlogPost, rhs: BlogPost) {
 	const lhsTime = new Date(lhs.date).getTime();
 	const rhsTime = new Date(rhs.date).getTime();
-	return lexComp(lhsTime, rhsTime);
+	const dateComp = lexComp(lhsTime, rhsTime);
+  return dateComp !== 0 ? dateComp : lexComp(lhs.slug, rhs.slug);
 }
 
 const relatedPosts = (posts: BlogPost[], post: BlogPost) => {

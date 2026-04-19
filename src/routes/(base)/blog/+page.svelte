@@ -27,7 +27,7 @@
 <div id="posts" data-sveltekit-preload-data="tap">
 {#each filteredPostTable as post}
   <a class="post"
-    href="{blogUrl}/{post.slug}"
+    href="{blogUrl}/{post.slug}/"
   >
     <div>
       <b>{post.title}</b>
