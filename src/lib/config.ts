@@ -7,7 +7,7 @@ export const blogUrl: string = base
 export const title = '(nine && ...)';
 export const description = 'Ninefold\'s blog';
 export const url = dev ? 'http://localhost:5173' : 'https://9inefold.github.io/nine-fold-expressions'
-export const homepage = dev ? `${url}/main` : `${url}/main.html`;
+export const homepage = `${url}/main`;
 
 // So I don't accidentally leave this on in release.
 const debugInternal = false;

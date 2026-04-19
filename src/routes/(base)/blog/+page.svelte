@@ -24,7 +24,7 @@
 }}>Log</button>
 {/if}
 
-<div id="posts">
+<div id="posts" data-sveltekit-preload-data="tap">
 {#each filteredPostTable as post}
   <a class="post"
     href="{blogUrl}/{post.slug}"

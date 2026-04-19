@@ -6,13 +6,13 @@
 </script>
 
 <header>
-	<a id="aname" href="{homepage}" data-sveltekit-preload-data="off">
+	<a id="aname" href="{homepage}" data-sveltekit-preload-data="tap">
 		<h1 id="name">
 			<Jittery text="{title}" onhover={true} />
 		</h1>
 	</a>
 	<div class="subheader" role="banner">
-		<a id="logo" href="{homepage}" data-sveltekit-preload-data="off">
+		<a id="logo" href="{homepage}" data-sveltekit-preload-data="tap">
 			<Logo size={60} />
 		</a>
 		<nav>
