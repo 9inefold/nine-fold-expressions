@@ -16,6 +16,29 @@
   export let width = 2;
   export let gap   = 3;
 
+  /// filter:
+  ///   invert(${invert ? 100 : 0}%)
+  ///   opacity(${opacity}%)
+  ///   url(#ripple-filter);
+
+  $: cssurl = makeCssUrl(href);
+  $: filter = ((`
+  filter:
+    invert(${invert ? 100 : 0}%)
+    opacity(${opacity}%);
+  `));
+  $: background = ((`
+  background:
+    repeating-radial-gradient(
+      circle at ${position},
+      ${light},
+      ${dark}  ${width}px,
+      ${dark}  ${width + gap}px,
+      ${light} ${width + gap * 2}px
+    ), ${cssurl};
+  `));
+  $: style_slide = `animation-duration:${slideSpeed.y}s,${slideSpeed.x}s;`;
+
   type TimerType = ReturnType<typeof setTimeout>;
   let focused = true;
   let lastClicked: number = 0;
@@ -40,32 +63,21 @@
     };
   });
 
+  const vfxSetter = async () => {
+    const cookieValue = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("vfx="))
+      ?.split("=")[1];
+    if (cookieValue)
+      vfx.set(cookieValue === 'true');
+  };
+  if (typeof document !== 'undefined' && $vfx == undefined) {
+    vfxSetter();
+  }
+
   $: frequency = 0.05;
   $: scale = 50;
   $: canvasScale = 330;
-
-  /// filter:
-  ///   invert(${invert ? 100 : 0}%)
-  ///   opacity(${opacity}%)
-  ///   url(#ripple-filter);
-
-  $: cssurl = makeCssUrl(href);
-  $: filter = ((`
-  filter:
-    invert(${invert ? 100 : 0}%)
-    opacity(${opacity}%);
-  `));
-  $: background = ((`
-  background:
-    repeating-radial-gradient(
-      circle at ${position},
-      ${light},
-      ${dark}  ${width}px,
-      ${dark}  ${width + gap}px,
-      ${light} ${width + gap * 2}px
-    ), ${cssurl};
-  `));
-  $: style_slide = `animation-duration:${slideSpeed.y}s,${slideSpeed.x}s;`;
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions (I don't care!!!) -->

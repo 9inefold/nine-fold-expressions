@@ -66,6 +66,9 @@
 <style lang="scss">
   @import '$styles/variables';
 
+  $progress-fg: rgb(158, 28, 112);
+  $progress-bg: rgb(255 255 255 / 10%);
+
   .reading-progress {
     position: fixed;
     top: 0;
@@ -75,15 +78,25 @@
     height: 5px;
 
     border: none;
-    background-color: transparent;
+    background-color: $progress-bg;
 
     -webkit-appearance:none;
     -moz-appearance:none;
     appearance:none
   }
 
-  .reading-progress::-webkit-progress-value {
-    background: rgb(158, 28, 112);
+  @supports selector(::-webkit-progress-bar) {
+    .reading-progress::-webkit-progress-bar {
+      background-color: $progress-bg;
+    }
+    .reading-progress::-webkit-progress-value {
+      background: $progress-fg;
+    }
   }
 
+  @supports selector(::-moz-progress-bar) {
+    .reading-progress::-moz-progress-bar {
+      background-color: $progress-fg;
+    }
+  }
 </style>

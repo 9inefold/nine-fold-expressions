@@ -6,24 +6,26 @@
 </script>
 
 <header>
-	<a id="logo" href="{homepage}/" data-sveltekit-preload-data="tap">
-		<Logo size={60} />
-	</a>
-  <a id="aname" href="{homepage}/" data-sveltekit-preload-data="tap">
+	<a id="aname" href="{homepage}/" data-sveltekit-preload-data="tap">
 		<h1 id="name">
 			<Jittery text="{title}" onhover={true} />
 		</h1>
 	</a>
-	<nav>
-		<ul>
-			<a class="atext" href="{base}/blog/">
-				<div class="text">Blog</div>
-			</a>
-			<a class="atext" href="{base}/about/">
-				<div class="text">About</div>
-			</a>
-		</ul>
-	</nav>
+	<div class="subheader" role="banner">
+		<a id="logo" href="{homepage}/" data-sveltekit-preload-data="tap">
+			<Logo size={60} />
+		</a>
+		<nav>
+			<ul>
+				<a class="atext" href="{base}/blog/">
+					<div class="text">Blog</div>
+				</a>
+				<a class="atext" href="{base}/about/">
+					<div class="text">About</div>
+				</a>
+			</ul>
+		</nav>
+	</div>
 </header>
 
 <style lang="scss">
@@ -35,15 +37,15 @@
 		background: linear-gradient(to right,
 			$sulfur-smoke, $lighter, $sulfur-smoke
 		);
-		//align-items: center;
+		align-items: center;
 		justify-content: center;
 		border-top-left-radius: $border-radius;
+	}
 
-    display: flex;
+	.subheader {
+		display: flex;
 		flex-wrap: wrap;
 		justify-content: space-between;
-
-    height: 80px;
 	}
 
 	a {
@@ -59,24 +61,19 @@
 		transform: rotate(22.5deg);
 	}
 
-  .atext {
-    display: flex;
-    align-items: center;
-  }
-
 	.text {
-    height: fit-content;
+		height: 50%;
+		transform: translateY(75%);
 	}
 
 	#aname {
 		z-index: 10;
-		height: inherit;
+		//height: inherit;
+		height: 0px;
 		left: 0%;
-    width: fit-content;
-    position: relative;
-
+		width: 100%;
+		position: absolute;
 		display: flex;
-    align-items: center;
 		flex-wrap: wrap;
 		justify-content: center;
 		vertical-align: middle;
@@ -89,13 +86,14 @@
 		user-select: none;
 		width: max-content;
 		// animation: spinny 4s linear 0ms infinite alternate both;
-    animation: ping 4s linear 1s infinite normal both;
+		
+    //animation: ping 4s linear 1s infinite normal both;
 	}
 
   @media (width <= 720px) {
     #aname {
-      position: relative;
-      width: fit-content;
+			display: inline;
+      position-anchor: ;
 		}
   }
 
@@ -107,11 +105,13 @@
 
 	@media (width <= 480px) {
 		#name {
-			font-size: 18px;
+			font-size: 16px;
+			margin-left: 25%;
+			margin-top: 30px;
 		}
 	}
 
-	@media (width < 360px) {
+	@media (width < 330px) {
 		#name {
 			display: none;
 		}
@@ -125,8 +125,7 @@
 	}
 
 	nav {
-    height: inherit;
-		//vertical-align: center;
+		vertical-align: center;
 		z-index: 11;
 	}
 

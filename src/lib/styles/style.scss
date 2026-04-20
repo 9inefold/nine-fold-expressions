@@ -53,9 +53,11 @@ html {
   overflow-x: hidden;
 }
 
-body::-webkit-scrollbar {
-  // TODO: Update this so it shows up on blog posts
-  display: none;
+@supports selector(::-webkit-scrollbar) {
+  body::-webkit-scrollbar {
+    // TODO: Update this so it shows up on blog posts
+    display: none;
+  }
 }
 
 #svelte-root {

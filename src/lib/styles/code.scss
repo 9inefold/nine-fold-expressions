@@ -7,6 +7,26 @@ code {
   font-size: inherit;
 }
 
+$scrollbar-color: color.mix(lightgray, $light-eggplant, 50%);
+
+@supports (scrollbar-color: auto) {
+  pre[class*="language-"] {
+    scrollbar-color: $scrollbar-color $clear;
+    scrollbar-gutter: stable;
+  }
+}
+
+//@supports selector(::-webkit-scrollbar-thumb) {
+//  pre[class*="language-"]::-webkit-scrollbar {
+//    background: $clear;
+//    height: 8px;
+//  }
+//  pre[class*="language-"]::-webkit-scrollbar-thumb {
+//    background: $scrollbar-color;
+//    border-radius: .5rem;
+//  }
+//}
+
 code[class*="language-"],
 pre[class*="language-"] {
 	text-align: left;
