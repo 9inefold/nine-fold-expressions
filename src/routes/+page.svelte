@@ -35,36 +35,46 @@
 
   $: rgb_light = `${color_light}, ${color_light}, ${color_light}`
 
+  let pressed = false;
+
+  function move(e: PointerEvent) {
+    if (!pressed)
+      return;
+    const x = Math.max(-100, Math.min(e.clientX, outerWidth * 2));
+		const y = Math.max(-100, Math.min(e.clientY, outerHeight * 2));
+    coords.set({ x: x, y: y });
+  }
   function release() {
+    pressed = false;
     size.set(1);
     light.set(220);
     a_light.set(0.7);
   }
+  //on:pointerout={release}
 </script>
 
 <svelte:window bind:outerWidth bind:outerHeight />
 
 <svelte:document
   on:blur={(e) => {
+    pressed = false;
     coords.set({ x: 100, y: 100 }, { hard: true });
   }}
 	on:pointerleave={(e) => {
+    pressed = false;
     //console.log(`left: {${e.clientX}, ${e.clientY}}`)
 		coords.set({ x: (e.clientX / 2), y: (e.clientY / 2) });
     release();
 	}}
-  on:pointermove={(e) => {
-		const x = Math.max(-100, Math.min(e.clientX, outerWidth * 2));
-		const y = Math.max(-100, Math.min(e.clientY, outerHeight * 2));
-    coords.set({ x: x, y: y });
-  }}
-  on:pointerdown={() => {
+  on:pointermove={move}
+  on:pointerdown={(e) => {
+    pressed = true
+    move(e);
     size.set(5);
     light.set(255);
     a_light.set(0.8);
   }}
   on:pointerup={release}
-  on:pointerout={release}
 />
 
 <div id="block">
