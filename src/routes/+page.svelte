@@ -17,8 +17,8 @@
 	$: outerHeight = 0;
 
 	let coords = spring({ x: 50, y: 50 }, {
-		stiffness: 0.15,
-		damping: 0.05
+		stiffness: 0.22,
+		damping: 0.11
 	});
 
   let size = spring(1);
@@ -34,6 +34,12 @@
   $: vsy = 10 - sy;
 
   $: rgb_light = `${color_light}, ${color_light}, ${color_light}`
+
+  function release() {
+    size.set(1);
+    light.set(220);
+    a_light.set(0.7);
+  }
 </script>
 
 <svelte:window bind:outerWidth bind:outerHeight />
@@ -45,22 +51,20 @@
 	on:pointerleave={(e) => {
     //console.log(`left: {${e.clientX}, ${e.clientY}}`)
 		coords.set({ x: (e.clientX / 2), y: (e.clientY / 2) });
+    release();
 	}}
-  on:mousemove={(e) => {
+  on:pointermove={(e) => {
 		const x = Math.max(-100, Math.min(e.clientX, outerWidth * 2));
 		const y = Math.max(-100, Math.min(e.clientY, outerHeight * 2));
     coords.set({ x: x, y: y });
   }}
-  on:mousedown={() => {
+  on:pointerdown={() => {
     size.set(5);
     light.set(255);
     a_light.set(0.8);
   }}
-  on:mouseup={() => {
-    size.set(1);
-    light.set(220);
-    a_light.set(0.7);
-  }}
+  on:pointerup={release}
+  on:pointerout={release}
 />
 
 <div id="block">
